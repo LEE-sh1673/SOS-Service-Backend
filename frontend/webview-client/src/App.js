@@ -7,14 +7,7 @@ function App() {
       <header className="App-header">
         <img src={logo} className="App-logo" alt="logo" />
         <p>webview-client</p>
-        <a
-          className="App-link"
-          href="https://reactjs.org"
-          target="_blank"
-          rel="noopener noreferrer"
-        >
-          React App
-        </a>
+        <p>어린이/장애인 안심귀가 모니터링 및 SOS 서비스</p>
       </header>
     </div>
   );
