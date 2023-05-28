@@ -6,29 +6,56 @@
  * @flow strict-local
  */
 
-import React, {useState} from 'react';
+import React, {useEffect, useRef} from 'react';
+import {Platform, PermissionsAndroid} from 'react-native';
 import type {Node} from 'react';
-import {Button, SafeAreaView, StyleSheet, Text, View} from 'react-native';
+import {SafeAreaView, StyleSheet, Text, View} from 'react-native';
 import {WebView} from 'react-native-webview';
+import Geolocation from 'react-native-geolocation-service';
 
 const App: () => Node = () => {
-  const [data, setData] = useState(0);
-  function onClickAdd() {
-    setData(data + 1);
-  }
-  const webViewUrl = `https://yhuj79.github.io/SOS-Service/${data}`;
+  const webViewRef = useRef(null);
+
+  useEffect(() => {
+    if (Platform.OS === 'ios') {
+      Geolocation.requestAuthorization('always');
+    } else if (Platform.OS === 'android') {
+      PermissionsAndroid.request(
+        PermissionsAndroid.PERMISSIONS.ACCESS_FINE_LOCATION,
+      );
+    }
+  }, []);
+
+  useEffect(() => {
+    Geolocation.getCurrentPosition(
+      position => {
+        const {latitude, longitude} = position.coords;
+        const message = JSON.stringify({latitude, longitude});
+        console.log(message);
+        webViewRef.current.postMessage(message);
+      },
+      error => {
+        console.log(error);
+      },
+      {enableHighAccuracy: true, timeout: 15000, maximumAge: 10000},
+    );
+  }, []);
+
+  const webViewUrl = 'http://localhost:3000/';
   return (
     <SafeAreaView style={styles.container}>
       <View style={styles.div_location}>
-        <Button
-          onPress={onClickAdd}
-          title="Add"
-          color="#841584"
-          accessibilityLabel="Learn more about this purple button"
-        />
         <Text style={styles.title}>rnClient</Text>
       </View>
-      <WebView source={{uri: webViewUrl}} />
+      <WebView
+        ref={webViewRef}
+        source={{uri: webViewUrl}}
+        injectedJavaScript={`
+        window.addEventListener('message', function(event) {
+          console.log('Received message from RN:', event.data);
+        });
+      `}
+      />
     </SafeAreaView>
   );
 };
