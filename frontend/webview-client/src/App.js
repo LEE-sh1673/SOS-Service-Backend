@@ -5,7 +5,7 @@ function App() {
   return (
     <Router>
       <Routes>
-        <Route path="/sosmain" element={<Map />} />
+        <Route path="/map" element={<Map />} />
       </Routes>
     </Router>
   );
