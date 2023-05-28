@@ -41,7 +41,7 @@ const App: () => Node = () => {
     );
   }, []);
 
-  const webViewUrl = 'http://localhost:3000/';
+  const webViewUrl = 'https://sos-service-h4nvkatdm-yhuj79.vercel.app/map';
   return (
     <SafeAreaView style={styles.container}>
       <View style={styles.div_location}>
