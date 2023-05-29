@@ -1,41 +1,16 @@
-import { useEffect, useRef, useState } from "react";
+import { BrowserRouter as Router, Route, Routes } from "react-router-dom";
+import Home from "./Home";
+import Map from "./Map";
 
-function App() {
-  const [data, setData] = useState([]);
-  useEffect(() => {
-    window.addEventListener("message", (e) => setData(JSON.parse(e.data)));
-  }, []);
-
-  const mapElement = useRef(null);
-
-  useEffect(() => {
-    const { naver } = window;
-    if (!mapElement.current || !naver) return;
-
-    const location = new naver.maps.LatLng(data.latitude, data.longitude);
-    const mapOptions: naver.maps.MapOptions = {
-      center: location,
-      zoom: 15,
-      zoomControl: true,
-      zoomControlOptions: {
-        position: naver.maps.Position.TOP_RIGHT,
-      },
-    };
-    const map = new naver.maps.Map(mapElement.current, mapOptions);
-    new naver.maps.Marker({
-      position: location,
-      map,
-    });
-  }, [data]);
-
+const App = () => {
   return (
-    <div>
-      <p>어린이/장애인 안심귀가 모니터링 및 SOS 서비스</p>
-      {data ? <p>{data.latitude}</p> : <p>latitude undefined</p>}
-      {data ? <p>{data.longitude}</p> : <p>longitude undefined</p>}
-      <div ref={mapElement} style={{ minHeight: "500px" }} />
-    </div>
+    <Router basename={process.env.PUBLIC_URL}>
+      <Routes>
+        <Route path="/" element={<Home />} />
+        <Route path="/map/:latitude/:longitude" element={<Map />} />
+      </Routes>
+    </Router>
   );
-}
+};
 
 export default App;
