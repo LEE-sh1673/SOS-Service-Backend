@@ -6,18 +6,14 @@
  * @flow strict-local
  */
 
-import React, {useEffect, useRef, useState} from 'react';
+import React, {useEffect, useState} from 'react';
 import {Platform, PermissionsAndroid} from 'react-native';
 import type {Node} from 'react';
 import {SafeAreaView, StyleSheet, Text, View} from 'react-native';
-import {WebView} from 'react-native-webview';
 import Geolocation from 'react-native-geolocation-service';
+import MapView, {Marker} from 'react-native-maps';
 
 const App: () => Node = () => {
-  const webViewRef = useRef(null);
-  const [lat, setLat] = useState('');
-  const [long, setLong] = useState('');
-
   useEffect(() => {
     if (Platform.OS === 'ios') {
       Geolocation.requestAuthorization('always');
@@ -28,38 +24,65 @@ const App: () => Node = () => {
     }
   }, []);
 
+  const [currentLocation, setCurrentLocation] = useState(null);
+
   useEffect(() => {
+    // 위치 업데이트 설정
     const watchId = Geolocation.watchPosition(
       position => {
         const {latitude, longitude} = position.coords;
-        // 위치 좌표 업데이트 후 원하는 작업 수행
-        console.log('현재 위치:', latitude, longitude);
-        setLat(latitude);
-        setLong(longitude);
+        setCurrentLocation({latitude, longitude});
       },
       error => {
-        console.log('위치 업데이트 에러:', error);
+        console.log(error);
       },
       {
         enableHighAccuracy: true,
-        distanceFilter: 10, // 위치 업데이트 간격 (미터)
-        fastestInterval: 500, // 최소 업데이트 시간 간격 (밀리초)
+        timeout: 20000,
+        maximumAge: 0,
+        distanceFilter: 1,
       },
     );
 
+    // 컴포넌트 언마운트 시 위치 업데이트 중지
     return () => {
-      // 컴포넌트가 unmount될 때 위치 감시 해제
       Geolocation.clearWatch(watchId);
     };
   }, []);
 
-  const webViewUrl = `https://yhuj79.github.io/SOS-Service/map/${lat}/${long}`;
   return (
     <SafeAreaView style={styles.container}>
-      <View style={styles.div_location}>
-        <Text style={styles.title}>rnClient</Text>
-      </View>
-      <WebView ref={webViewRef} source={{uri: webViewUrl}} />
+      {currentLocation ? (
+        <View style={styles.div_location}>
+          <Text style={styles.text}>rnClient</Text>
+          <Text style={styles.text}>{currentLocation.latitude}</Text>
+          <Text style={styles.text}>{currentLocation.longitude}</Text>
+        </View>
+      ) : (
+        <View>
+          <Text style={styles.text}>Location Error</Text>
+        </View>
+      )}
+      {currentLocation ? (
+        <MapView
+          style={styles.map}
+          initialRegion={{
+            latitude: currentLocation.latitude,
+            longitude: currentLocation.longitude,
+            latitudeDelta: 0.00522,
+            longitudeDelta: 0.00021,
+          }}>
+          <Marker
+            coordinate={{
+              latitude: currentLocation.latitude,
+              longitude: currentLocation.longitude,
+            }}
+            title="My Location"
+          />
+        </MapView>
+      ) : (
+        <Text>Loading...</Text>
+      )}
     </SafeAreaView>
   );
 };
@@ -69,15 +92,18 @@ const styles = StyleSheet.create({
     flex: 1,
   },
   div_location: {
-    backgroundColor: '#FFF',
-    paddingTop: 70,
-    paddingBottom: 70,
+    paddingTop: 30,
+    paddingBottom: 30,
   },
-  title: {
+  text: {
+    color: '#000',
     fontWeight: '700',
-    fontSize: 30,
+    fontSize: 20,
     textAlign: 'center',
-    marginBottom: 30,
+    marginBottom: 5,
+  },
+  map: {
+    flex: 1,
   },
 });
 
