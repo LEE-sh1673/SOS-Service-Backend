@@ -1,119 +1,189 @@
 buildscript {
-	ext {
-		springBootVersion = '2.7.12'
-		springDependencyManagement = '1.0.15.RELEASE'
-		asciidoctorVersion = '3.3.2'
-		springRestDocsVersion = '3.0.0'
-		queryDslVersion = '5.0.0'
-		snippetsDir = file('build/generated-snippets')
-		restDocsDir = file('src/main/resources/static/docs')
-	}
+    ext {
+        jacocoVersion = '0.8.9'
+        springBootVersion = '2.7.12'
+        springDependencyManagement = '1.0.15.RELEASE'
+        asciidoctorVersion = '3.3.2'
+        springRestDocsVersion = '3.0.0'
+        queryDslVersion = '5.0.0'
+        snippetsDir = file('build/generated-snippets')
+        restDocsDir = file('src/main/resources/static/docs')
+    }
 }
 
 plugins {
-	id 'java'
-	id 'org.springframework.boot' version "$springBootVersion"
-	id 'io.spring.dependency-management' version "$springDependencyManagement"
-	id 'org.asciidoctor.jvm.convert' version "$asciidoctorVersion"
+    id 'java'
+    id 'jacoco'
+    id 'org.springframework.boot' version "$springBootVersion"
+    id 'io.spring.dependency-management' version "$springDependencyManagement"
+    id 'org.asciidoctor.jvm.convert' version "$asciidoctorVersion"
 }
 
 group = 'group.ict'
 version = '0.0.1-SNAPSHOT'
 
 java {
-	toolchain {
-		languageVersion = JavaLanguageVersion.of(11)
-	}
+    toolchain {
+        languageVersion = JavaLanguageVersion.of(11)
+    }
+}
+
+jacoco {
+    toolVersion = "$jacocoVersion"
 }
 
 configurations {
-	compileOnly {
-		extendsFrom annotationProcessor
-	}
-	asciidoctorExt
+    compileOnly {
+        extendsFrom annotationProcessor
+    }
+    asciidoctorExt
 }
 
 repositories {
-	mavenCentral()
+    mavenCentral()
 }
 
 dependencies {
-	developmentOnly 'org.springframework.boot:spring-boot-devtools'
+    developmentOnly 'org.springframework.boot:spring-boot-devtools'
 
-	// spring security
-	implementation 'org.springframework.boot:spring-boot-starter-security'
-	implementation 'org.springframework.security:spring-security-test'
+    // spring security
+    implementation 'org.springframework.boot:spring-boot-starter-security'
+    implementation 'org.springframework.security:spring-security-test'
 
-	// other spring starter dependencies
-	implementation 'org.springframework.boot:spring-boot-starter-data-jpa'
-	implementation 'org.springframework.boot:spring-boot-starter-web'
-	implementation 'org.springframework.boot:spring-boot-starter-websocket'
+    // other spring starter dependencies
+    implementation 'org.springframework.boot:spring-boot-starter-data-jpa'
+    implementation 'org.springframework.boot:spring-boot-starter-web'
+    implementation 'org.springframework.boot:spring-boot-starter-websocket'
 
-	// configuration processor
-	annotationProcessor 'org.springframework.boot:spring-boot-configuration-processor'
+    // configuration processor
+    annotationProcessor 'org.springframework.boot:spring-boot-configuration-processor'
 
-	// lombok
-	compileOnly 'org.projectlombok:lombok'
-	annotationProcessor 'org.projectlombok:lombok'
-	testCompileOnly 'org.projectlombok:lombok'
-	testAnnotationProcessor 'org.projectlombok:lombok'
+    // lombok
+    compileOnly 'org.projectlombok:lombok'
+    annotationProcessor 'org.projectlombok:lombok'
+    testCompileOnly 'org.projectlombok:lombok'
+    testAnnotationProcessor 'org.projectlombok:lombok'
 
-	// database dependencies
-	runtimeOnly 'com.mysql:mysql-connector-j'
-	implementation 'com.h2database:h2'
+    // database dependencies
+    runtimeOnly 'com.mysql:mysql-connector-j'
+    implementation 'com.h2database:h2'
 
-	// spring test starter dependency
-	testImplementation 'org.springframework.boot:spring-boot-starter-test'
+    // spring test starter dependency
+    testImplementation 'org.springframework.boot:spring-boot-starter-test'
 
-	//=== query dsl
-	implementation "com.querydsl:querydsl-core:$queryDslVersion"
-	implementation "com.querydsl:querydsl-jpa:${queryDslVersion}:jakarta"
+    //=== query dsl
+    implementation "com.querydsl:querydsl-core:$queryDslVersion"
+    implementation "com.querydsl:querydsl-jpa:${queryDslVersion}:jakarta"
 
-	annotationProcessor "com.querydsl:querydsl-apt:${queryDslVersion}:jakarta"
-	annotationProcessor "jakarta.persistence:jakarta.persistence-api"
-	annotationProcessor "jakarta.annotation:jakarta.annotation-api"
+    annotationProcessor "com.querydsl:querydsl-apt:${queryDslVersion}:jakarta"
+    annotationProcessor "jakarta.persistence:jakarta.persistence-api"
+    annotationProcessor "jakarta.annotation:jakarta.annotation-api"
 
-	//=== spring rest docs
-	asciidoctorExt "org.springframework.restdocs:spring-restdocs-asciidoctor:$springRestDocsVersion"
-	testImplementation "org.springframework.restdocs:spring-restdocs-mockmvc:$springRestDocsVersion"
+    //=== spring rest docs
+    asciidoctorExt "org.springframework.restdocs:spring-restdocs-asciidoctor:$springRestDocsVersion"
+    testImplementation "org.springframework.restdocs:spring-restdocs-mockmvc:$springRestDocsVersion"
 }
 
 test {
-	outputs.dir snippetsDir
-	useJUnitPlatform()
+    outputs.dir snippetsDir
+    useJUnitPlatform()
+    finalizedBy jacocoTestReport
+}
+
+jacocoTestReport {
+    dependsOn test
+
+    reports {
+        csv.required = false
+        xml.required = true
+        html.required = true
+    }
+
+    def Qdomains = []
+
+    for (qPattern in "*QA".."*QZ") {
+        Qdomains.add(qPattern + "*")
+    }
+
+    afterEvaluate {
+        classDirectories.setFrom(files(classDirectories.files.collect {
+            fileTree(dir: it,
+                    exclude: [
+                            '*SosServiceApplication*'
+                    ] + Qdomains)
+        }))
+    }
+
+    finalizedBy jacocoTestCoverageVerification
+}
+
+jacocoTestCoverageVerification {
+    def Qdomains = []
+    for (qPattern in "*QA".."*QZ") {
+        Qdomains.add(qPattern + "*")
+    }
+
+    violationRules {
+        rule {
+            enabled = true
+            element = 'CLASS'
+
+            limit {
+                counter = 'BRANCH'
+                value = 'COVEREDRATIO'
+                minimum = 0.60
+            }
+
+            limit {
+                counter = 'LINE'
+                value = 'COVEREDRATIO'
+                minimum = 0.80
+            }
+
+            limit {
+                counter = 'LINE'
+                value = 'TOTALCOUNT'
+                maximum = 200
+            }
+
+            excludes = [
+                    "*SosServiceApplication*"
+            ] + Qdomains
+        }
+    }
 }
 
 asciidoctor {
-	inputs.dir snippetsDir
-	configurations 'asciidoctorExt'
-	dependsOn test
+    inputs.dir snippetsDir
+    configurations 'asciidoctorExt'
+    dependsOn test
 }
 
 asciidoctor.doFirst {
-	println("---------------- delete present asciidoctor.")
-	delete restDocsDir
+    println("---------------- delete present asciidoctor.")
+    delete restDocsDir
 }
 
 asciidoctor.doLast {
-	println("---------------- asciidoctor is deleted!")
+    println("---------------- asciidoctor is deleted!")
 }
 
 clean {
-	delete file('src/main/generated')
+    delete file('src/main/generated')
 }
 
 tasks.register('copyDocument', Copy) {
-	dependsOn asciidoctor
-	from file(asciidoctor.outputDir)
-	into restDocsDir
+    dependsOn asciidoctor
+    from file(asciidoctor.outputDir)
+    into restDocsDir
 }
 
 build {
-	dependsOn copyDocument
+    dependsOn copyDocument
 }
 
 bootJar {
-	dependsOn asciidoctor
-	from file(asciidoctor.outputDir)
-	into restDocsDir
+    dependsOn asciidoctor
+    from file(asciidoctor.outputDir)
+    into restDocsDir
 }
