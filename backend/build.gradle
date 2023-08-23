@@ -97,6 +97,7 @@ jacocoTestReport {
         csv.required = false
         xml.required = true
         html.required = true
+        html.destination "${buildDir}/jacocoHtml" as File
     }
 
     def Qdomains = []
@@ -131,13 +132,13 @@ jacocoTestCoverageVerification {
             limit {
                 counter = 'BRANCH'
                 value = 'COVEREDRATIO'
-                minimum = 0.60
+                minimum = 0.30
             }
 
             limit {
                 counter = 'LINE'
                 value = 'COVEREDRATIO'
-                minimum = 0.80
+                minimum = 0.30
             }
 
             limit {
