@@ -15,7 +15,7 @@ const TabNavigation = () => {
   return (
     <Tab.Navigator
       screenOptions={{
-        tabBarActiveTintColor: 'black',
+        tabBarActiveTintColor: '#000',
         tabBarInactiveTintColor: '#ABABAB',
       }}>
       <Tab.Screen
@@ -24,7 +24,7 @@ const TabNavigation = () => {
         options={{
           tabBarIcon: ({color, focused}) => (
             <MaterialIcons
-              color={focused ? 'black' : '#ABABAB'}
+              color={focused ? '#000' : '#ABABAB'}
               name={'location-on'}
               size={27}
             />
@@ -44,7 +44,7 @@ const TabNavigation = () => {
         options={{
           tabBarIcon: ({color, focused}) => (
             <MaterialIcons
-              color={focused ? 'black' : '#ABABAB'}
+              color={focused ? '#000' : '#ABABAB'}
               name={'person-search'}
               size={27}
             />
