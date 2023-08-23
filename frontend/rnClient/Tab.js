@@ -14,9 +14,9 @@ const ScreenComponent = () => {
 const TabNavigation = () => {
   return (
     <Tab.Navigator
-      tabBarOptions={{
-        activeTintColor: 'black',
-        inactiveTintColor: '#ABABAB',
+      screenOptions={{
+        tabBarActiveTintColor: 'black',
+        tabBarInactiveTintColor: '#ABABAB',
       }}>
       <Tab.Screen
         name="내 위치"
