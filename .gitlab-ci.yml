@@ -4,6 +4,7 @@ variables:
   GRADLE_OPTS: "-Dorg.gradle.daemon=false"
 
 before_script:
+  - cd backend
   - chmod +x ./gradlew
 
 build:
