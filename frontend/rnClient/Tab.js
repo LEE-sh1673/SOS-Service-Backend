@@ -7,16 +7,16 @@ import MaterialIcons from 'react-native-vector-icons/MaterialIcons';
 
 const Tab = createBottomTabNavigator();
 
-const PayScreenComponent = () => {
+const ScreenComponent = () => {
   return null;
 };
 
 const TabNavigation = () => {
   return (
     <Tab.Navigator
-      tabBarOptions={{
-        activeTintColor: 'black',
-        inactiveTintColor: '#ABABAB',
+      screenOptions={{
+        tabBarActiveTintColor: '#000',
+        tabBarInactiveTintColor: '#ABABAB',
       }}>
       <Tab.Screen
         name="내 위치"
@@ -24,7 +24,7 @@ const TabNavigation = () => {
         options={{
           tabBarIcon: ({color, focused}) => (
             <MaterialIcons
-              color={focused ? 'black' : '#ABABAB'}
+              color={focused ? '#000' : '#ABABAB'}
               name={'location-on'}
               size={27}
             />
@@ -33,7 +33,7 @@ const TabNavigation = () => {
       />
       <Tab.Screen
         name="SOS"
-        component={PayScreenComponent}
+        component={ScreenComponent}
         options={{
           tabBarButton: () => <SOS />,
         }}
@@ -44,7 +44,7 @@ const TabNavigation = () => {
         options={{
           tabBarIcon: ({color, focused}) => (
             <MaterialIcons
-              color={focused ? 'black' : '#ABABAB'}
+              color={focused ? '#000' : '#ABABAB'}
               name={'person-search'}
               size={27}
             />

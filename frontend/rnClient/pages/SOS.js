@@ -14,7 +14,7 @@ export const SOS = () => {
 const styles = StyleSheet.create({
   button: {
     width: 80,
-    backgroundColor: 'red',
+    backgroundColor: '#EF3636',
     borderRadius: 50,
     padding: 10,
     marginTop: 5,
@@ -22,7 +22,7 @@ const styles = StyleSheet.create({
   text: {
     textAlign: 'center',
     margin: -6,
-    color: 'white',
+    color: '#FFF',
     fontSize: 23,
     fontWeight: 'bold',
   },
