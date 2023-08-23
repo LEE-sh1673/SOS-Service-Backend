@@ -1,12 +1,12 @@
 image: gradle:alpine
 
+before_script:
+  - cd backend
+  - echo ">> gradlew 실행 권한 설정"
+  - chmod +x ./gradlew
+
 variables:
   GRADLE_OPTS: "-Dorg.gradle.daemon=false"
-
-default:
-  before_script:
-    - echo ">> gradlew 실행 권한 설정"
-    - chmod +x ./gradlew
 
 stages:
   - build
