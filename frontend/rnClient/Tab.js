@@ -7,7 +7,7 @@ import MaterialIcons from 'react-native-vector-icons/MaterialIcons';
 
 const Tab = createBottomTabNavigator();
 
-const PayScreenComponent = () => {
+const ScreenComponent = () => {
   return null;
 };
 
@@ -33,7 +33,7 @@ const TabNavigation = () => {
       />
       <Tab.Screen
         name="SOS"
-        component={PayScreenComponent}
+        component={ScreenComponent}
         options={{
           tabBarButton: () => <SOS />,
         }}
