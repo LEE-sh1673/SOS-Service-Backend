@@ -29,7 +29,7 @@ test:
   artifacts:
     when: always
     paths:
-      - build/test-results/test/
+      - backend/build/test-results/test/
     reports:
       junit:
-        - build/test-results/test/TEST-*.xml
+        - backend/build/test-results/test/TEST-*.xml
