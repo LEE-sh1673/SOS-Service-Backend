@@ -12,3 +12,37 @@ spring:
       pageable:
         one-indexed-parameters: true
         default-page-size: 5
+
+  jpa:
+    show-sql: true
+    properties:
+      hibernate:
+        show_sql: true
+        format_sql: true
+        use_sql_comments: true
+        default_batch_fetch_size: 1000
+        dialect: org.hibernate.dialect.MySQL8Dialect
+    hibernate:
+      ddl-auto: none
+    open-in-view: false
+    defer-datasource-initialization: true
+
+  h2:
+    console:
+      enabled: true
+      path: /h2-console
+
+  datasource:
+    driver-class-name: org.h2.Driver
+    url: "jdbc:h2:mem:sos;MODE=MYSQL;NON_KEYWORDS=USER"
+    username: sa
+    password:
+
+  sql:
+    init:
+      schema-locations: classpath:/db/schema-h2.sql
+      data-locations: classpath:/db/data-h2.sql
+
+security:
+  authentication:
+    validity-seconds: 2592000  # 30일
