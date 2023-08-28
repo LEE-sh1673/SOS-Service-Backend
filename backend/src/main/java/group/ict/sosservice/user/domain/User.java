@@ -1,21 +1,26 @@
 package group.ict.sosservice.user.domain;
 
+import java.time.LocalDate;
+
 import javax.persistence.Column;
 import javax.persistence.Embedded;
 import javax.persistence.Entity;
+import javax.persistence.EnumType;
+import javax.persistence.Enumerated;
 import javax.persistence.GeneratedValue;
 import javax.persistence.GenerationType;
 import javax.persistence.Id;
 
+import group.ict.sosservice.common.domain.BaseTimeEntity;
 import lombok.AccessLevel;
 import lombok.Builder;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
 
+@Getter
 @Entity
 @NoArgsConstructor(access = AccessLevel.PROTECTED)
-@Getter
-public class User {
+public class User extends BaseTimeEntity {
 
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
@@ -26,13 +31,23 @@ public class User {
     @Embedded
     private Email email;
 
+    private String password;
+
+    private LocalDate birth;
+
     @Column(name = "profile_image")
     private String profileImage;
 
+    @Enumerated(EnumType.STRING)
+    @Column(nullable = false)
+    private Role role;
+
     @Builder
-    public User(String name, Email email, String profileImage) {
+    public User(final String name, final String email, final String password, final String profileImage, final Role role) {
         this.name = name;
-        this.email = email;
+        this.email = new Email(email);
+        this.password = password;
         this.profileImage = profileImage;
+        this.role = role;
     }
 }

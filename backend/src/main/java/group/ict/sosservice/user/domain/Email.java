@@ -1,5 +1,6 @@
 package group.ict.sosservice.user.domain;
 
+import java.util.Objects;
 import java.util.regex.Pattern;
 
 import javax.persistence.Column;
@@ -27,6 +28,10 @@ public class Email {
         this.value = value;
     }
 
+    public static Email of(final String email) {
+        return new Email(email);
+    }
+
     private void validateEmail(final String email) {
         if (email.isBlank() || !isValidPattern(email)) {
             throw new InvalidMemberException(ErrorType.INVALID_MEMBER_EMAIL);
@@ -35,5 +40,22 @@ public class Email {
 
     private boolean isValidPattern(final String email) {
         return EMAIL_REGEX.matcher(email).matches();
+    }
+
+    @Override
+    public boolean equals(final Object o) {
+        if (this == o) {
+            return true;
+        }
+        if (!(o instanceof Email)) {
+            return false;
+        }
+        final Email other = (Email) o;
+        return Objects.equals(value, other.value);
+    }
+
+    @Override
+    public int hashCode() {
+        return Objects.hash(value);
     }
 }
