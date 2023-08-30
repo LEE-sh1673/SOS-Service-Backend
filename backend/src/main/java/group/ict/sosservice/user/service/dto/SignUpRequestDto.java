@@ -1,5 +1,7 @@
 package group.ict.sosservice.user.service.dto;
 
+import java.time.LocalDate;
+
 import lombok.AccessLevel;
 import lombok.AllArgsConstructor;
 import lombok.Builder;
@@ -17,4 +19,10 @@ public class SignUpRequestDto {
     private String password;
 
     private String name;
+
+    private LocalDate birth;
+
+    private String phoneNumber;
+
+    private String profileImage;
 }

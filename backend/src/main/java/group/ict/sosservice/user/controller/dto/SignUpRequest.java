@@ -1,7 +1,13 @@
 package group.ict.sosservice.user.controller.dto;
 
+import java.time.LocalDate;
+
 import javax.validation.constraints.NotBlank;
 import javax.validation.constraints.Pattern;
+
+import org.springframework.format.annotation.DateTimeFormat;
+
+import com.fasterxml.jackson.annotation.JsonFormat;
 
 import group.ict.sosservice.user.service.dto.SignUpRequestDto;
 import lombok.AccessLevel;
@@ -27,11 +33,23 @@ public class SignUpRequest {
     @NotBlank(message = "이름은 공백일 수 없습니다.")
     private String name;
 
+    @DateTimeFormat(pattern = "yyyy-MM-dd")
+    @JsonFormat(shape = JsonFormat.Shape.STRING, pattern = "yyyy-MM-dd", timezone = "Asia/Seoul")
+    private LocalDate birth;
+
+    @Pattern(regexp = "^\\d{2,3}-\\d{3,4}-\\d{4}$", message = "핸드폰 번호의 양식과 맞지 않습니다. 01x-xxx(x)-xxxx")
+    private String phoneNumber;
+
+    private String profileImage;
+
     public SignUpRequestDto toServiceDto() {
         return SignUpRequestDto.builder()
             .email(email)
             .password(password)
             .name(name)
+            .birth(birth)
+            .phoneNumber(phoneNumber)
+            .profileImage(profileImage)
             .build();
     }
 }
