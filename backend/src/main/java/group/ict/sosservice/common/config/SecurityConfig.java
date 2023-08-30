@@ -3,8 +3,6 @@ package group.ict.sosservice.common.config;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
-import org.springframework.core.Ordered;
-import org.springframework.core.annotation.Order;
 import org.springframework.http.HttpMethod;
 import org.springframework.security.authentication.AuthenticationManager;
 import org.springframework.security.authentication.ProviderManager;
@@ -40,23 +38,17 @@ public class SecurityConfig {
     private long validityInSeconds;
 
     @Bean
-    @Order(Ordered.HIGHEST_PRECEDENCE)
     public SecurityFilterChain defaultSecurityFilterChain(final HttpSecurity http)
         throws Exception {
         http.csrf().disable();
         http.headers().frameOptions().disable();
         http.authorizeHttpRequests((httpRequests) -> httpRequests
-            .mvcMatchers(HttpMethod.POST, "/api/v1/auth/signup").permitAll()
-            .mvcMatchers(HttpMethod.POST, "/api/v1/auth/login").permitAll()
-            .mvcMatchers("/docs/**").permitAll()
+            .antMatchers("/docs/**").permitAll()
+            .antMatchers("/h2-console/**").permitAll()
+            .antMatchers(HttpMethod.POST, "/api/v1/auth/signup").permitAll()
+            .antMatchers(HttpMethod.POST, "/api/v1/auth/login").permitAll()
             .anyRequest().authenticated()
         );
-        return http.build();
-    }
-
-    @Bean
-    SecurityFilterChain emailPasswordAuthenticationSecurityFilterChain(final HttpSecurity http)
-        throws Exception {
         http.addFilterBefore(
             emailPasswordAuthFilter(),
             UsernamePasswordAuthenticationFilter.class
