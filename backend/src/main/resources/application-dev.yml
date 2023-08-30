@@ -7,17 +7,25 @@ server:
       timeout: 86400
 
 spring:
+  data:
+    web:
+      pageable:
+        one-indexed-parameters: true
+        default-page-size: 5
+
   jpa:
     show-sql: true
-    defer-datasource-initialization: true
     properties:
       hibernate:
         show_sql: true
-        dialect: org.hibernate.dialect.MySQLDialect
+        format_sql: true
+        use_sql_comments: true
         default_batch_fetch_size: 1000
+        dialect: org.hibernate.dialect.MySQL8Dialect
     hibernate:
-      ddl-auto: create-drop
+      ddl-auto: none
     open-in-view: false
+    defer-datasource-initialization: true
 
   h2:
     console:
@@ -26,12 +34,15 @@ spring:
 
   datasource:
     driver-class-name: org.h2.Driver
-    url: "jdbc:h2:mem:sos;MODE=MySQL;NON_KEYWORDS=USER"
+    url: "jdbc:h2:mem:sos;MODE=MYSQL;NON_KEYWORDS=USER"
     username: sa
     password:
 
-  data:
-    web:
-      pageable:
-        one-indexed-parameters: true  # 웹의 요청으로 1이 들어오면 자동으로 페이지 번호를 0으로 설정해줌.
-        default-page-size: 5
+  sql:
+    init:
+      schema-locations: classpath:/db/schema-h2.sql
+      data-locations: classpath:/db/data-h2.sql
+
+security:
+  authentication:
+    validity-seconds: 2592000  # 30일
