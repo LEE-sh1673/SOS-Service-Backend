@@ -114,7 +114,8 @@ jacocoTestReport {
         classDirectories.setFrom(files(classDirectories.files.collect {
             fileTree(dir: it,
                     exclude: [
-                            '*SosServiceApplication*'
+                            '*SosServiceApplication*',
+                            '*H2DevConfig*'
                     ] + Qdomains)
         }))
     }
@@ -152,7 +153,8 @@ jacocoTestCoverageVerification {
             }
 
             excludes = [
-                    "*SosServiceApplication*"
+                    "*SosServiceApplication*",
+                    '*H2DevConfig*'
             ] + Qdomains
         }
     }
