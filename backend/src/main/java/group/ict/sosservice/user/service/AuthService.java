@@ -40,6 +40,9 @@ public class AuthService {
             .name(request.getName())
             .email(request.getEmail())
             .password(encodePassword(request.getPassword()))
+            .birth(request.getBirth())
+            .profileImage(request.getProfileImage())
+            .phoneNumber(request.getPhoneNumber())
             .role(Role.USER)
             .build();
     }

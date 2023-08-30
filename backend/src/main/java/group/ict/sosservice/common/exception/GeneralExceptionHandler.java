@@ -25,4 +25,11 @@ public class GeneralExceptionHandler {
             .status(HttpStatus.BAD_REQUEST)
             .body(error(ErrorType.INVALID_REQUEST, new ArrayList<>(e.getFieldErrors())));
     }
+
+    @ExceptionHandler(BadRequestException.class)
+    public ResponseEntity<ApiResult<?>> handleBadRequestException(final BadRequestException e) {
+        return ResponseEntity
+            .status(HttpStatus.BAD_REQUEST)
+            .body(error(e.getMessage()));
+    }
 }
