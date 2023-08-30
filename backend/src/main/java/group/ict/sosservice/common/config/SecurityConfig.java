@@ -45,12 +45,6 @@ public class SecurityConfig {
         throws Exception {
         http.csrf().disable();
         http.headers().frameOptions().disable();
-        return http.build();
-    }
-
-    @Bean
-    SecurityFilterChain authorizeRequestsSecurityFilterChain(final HttpSecurity http)
-        throws Exception {
         http.authorizeHttpRequests((httpRequests) -> httpRequests
             .mvcMatchers(HttpMethod.POST, "/api/v1/auth/signup").permitAll()
             .mvcMatchers(HttpMethod.POST, "/api/v1/auth/login").permitAll()
@@ -72,7 +66,7 @@ public class SecurityConfig {
 
     @Bean
     public EmailPasswordAuthFilter emailPasswordAuthFilter() {
-        EmailPasswordAuthFilter filter = new EmailPasswordAuthFilter("/auth/login", objectMapper);
+        EmailPasswordAuthFilter filter = new EmailPasswordAuthFilter("/api/v1/auth/login", objectMapper);
 
         filter.setRememberMeServices(rememberMeServices());
         filter.setAuthenticationManager(authenticationManager());
