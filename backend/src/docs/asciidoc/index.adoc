@@ -17,8 +17,8 @@ endif::[]
 |===
 | 환경 | Host
 
-| Beta
-| `ec2-52-78-150-70.ap-northeast-2.compute.amazonaws.com`
+| Development
+| `ec2-52-78-150-70.ap-northeast-2.compute.amazonaws.com:8082`
 
 | Production
 | -
@@ -72,3 +72,7 @@ endif::[]
 === Auth API
 
 * link:auth.html[회원가입 API]
+
+* link:auth-login.html[로그인 API]
+
+* link:auth-me.html[회원 정보 조회 API]

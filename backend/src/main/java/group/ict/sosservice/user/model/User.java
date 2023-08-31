@@ -1,4 +1,4 @@
-package group.ict.sosservice.user.domain;
+package group.ict.sosservice.user.model;
 
 import java.time.LocalDate;
 
@@ -11,7 +11,7 @@ import javax.persistence.GeneratedValue;
 import javax.persistence.GenerationType;
 import javax.persistence.Id;
 
-import group.ict.sosservice.common.domain.BaseTimeEntity;
+import group.ict.sosservice.common.model.BaseTimeEntity;
 import lombok.AccessLevel;
 import lombok.Builder;
 import lombok.Getter;

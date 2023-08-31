@@ -11,10 +11,10 @@ import org.springframework.security.crypto.password.PasswordEncoder;
 
 import group.ict.sosservice.common.annotations.AcceptanceTest;
 import group.ict.sosservice.common.exception.ErrorType;
-import group.ict.sosservice.user.domain.Email;
-import group.ict.sosservice.user.domain.Role;
-import group.ict.sosservice.user.domain.User;
-import group.ict.sosservice.user.domain.UserRepository;
+import group.ict.sosservice.user.model.Email;
+import group.ict.sosservice.user.model.Role;
+import group.ict.sosservice.user.model.User;
+import group.ict.sosservice.user.model.UserRepository;
 import group.ict.sosservice.user.exception.InvalidMemberException;
 import group.ict.sosservice.user.service.dto.SignUpRequestDto;
 

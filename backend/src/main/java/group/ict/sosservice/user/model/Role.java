@@ -1,4 +1,4 @@
-package group.ict.sosservice.user.domain;
+package group.ict.sosservice.user.model;
 
 import lombok.Getter;
 import lombok.RequiredArgsConstructor;

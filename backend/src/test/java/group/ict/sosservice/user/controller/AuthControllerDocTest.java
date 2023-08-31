@@ -3,11 +3,15 @@ package group.ict.sosservice.user.controller;
 import static org.springframework.http.MediaType.APPLICATION_JSON;
 import static org.springframework.restdocs.mockmvc.MockMvcRestDocumentation.document;
 import static org.springframework.restdocs.mockmvc.RestDocumentationRequestBuilders.post;
+import static org.springframework.restdocs.mockmvc.RestDocumentationRequestBuilders.get;
 import static org.springframework.restdocs.operation.preprocess.Preprocessors.preprocessRequest;
 import static org.springframework.restdocs.operation.preprocess.Preprocessors.preprocessResponse;
 import static org.springframework.restdocs.operation.preprocess.Preprocessors.prettyPrint;
 import static org.springframework.restdocs.payload.JsonFieldType.ARRAY;
+import static org.springframework.restdocs.payload.JsonFieldType.BOOLEAN;
+import static org.springframework.restdocs.payload.JsonFieldType.NUMBER;
 import static org.springframework.restdocs.payload.JsonFieldType.OBJECT;
+import static org.springframework.restdocs.payload.JsonFieldType.STRING;
 import static org.springframework.restdocs.payload.PayloadDocumentation.fieldWithPath;
 import static org.springframework.restdocs.payload.PayloadDocumentation.requestFields;
 import static org.springframework.restdocs.payload.PayloadDocumentation.responseFields;
@@ -22,13 +26,20 @@ import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.autoconfigure.restdocs.AutoConfigureRestDocs;
 import org.springframework.boot.test.autoconfigure.web.servlet.AutoConfigureMockMvc;
+import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.test.web.servlet.MockMvc;
 import org.springframework.test.web.servlet.ResultActions;
 
+import com.fasterxml.jackson.core.JsonProcessingException;
 import com.fasterxml.jackson.databind.ObjectMapper;
 
 import group.ict.sosservice.common.annotations.AcceptanceTest;
+import group.ict.sosservice.common.annotations.WithMockTestUser;
 import group.ict.sosservice.user.controller.dto.SignUpRequest;
+import group.ict.sosservice.user.model.Role;
+import group.ict.sosservice.user.model.User;
+import lombok.Builder;
+import lombok.Getter;
 
 @AcceptanceTest
 @AutoConfigureMockMvc
@@ -131,5 +142,112 @@ public class AuthControllerDocTest {
                     fieldWithPath("error.details[].message").description("오류 필드 상세 메시지").optional()
                 )
             ));
+    }
+
+    @Test
+    @WithMockTestUser
+    @DisplayName("로그인")
+    void login() throws Exception {
+        final EmailPassword loginRequest = EmailPassword.builder()
+            .email("test-user@gmail.com")
+            .password("1234")
+            .build();
+
+        final ResultActions result = mockMvc.perform(
+            post("/api/v1/auth/login")
+                .contentType(APPLICATION_JSON)
+                .accept(APPLICATION_JSON)
+                .content(objectMapper.writeValueAsString(loginRequest))
+        );
+
+        result.andDo(print())
+            .andExpect(status().isOk())
+            .andDo(document("user-login",
+                preprocessRequest(prettyPrint()),
+                preprocessResponse(prettyPrint()),
+                requestFields(
+                    fieldWithPath("email").description("이메일 주소")
+                        .attributes(key("constraint").value(
+                            "형식에 맞춰 작성 (^[a-zA-Z0-9_!#$%&'*+/=?`{|}~^.-]+@[a-zA-Z0-9.-]+.[a-zA-Z]{2,6}$)")),
+                    fieldWithPath("password").description("비밀번호")
+                ),
+                responseFields(
+                    fieldWithPath("success").description("응답 성공 여부"),
+                    fieldWithPath("response").type(NUMBER).description("로그인한 사용자의 ID"),
+                    fieldWithPath("error").type(OBJECT).ignored()
+                )
+            ));
+    }
+
+    @Test
+    @WithMockTestUser
+    @DisplayName("로그인 요청 시 올바른 아이디/비밀번호를 입력해야 한다.")
+    void givenInvalidCredential_thenErrorResponse() throws Exception {
+        final EmailPassword loginRequest = EmailPassword.builder()
+            .email("test-user@gmail.com")
+            .password("wrong")
+            .build();
+
+        final ResultActions result = mockMvc.perform(
+            post("/api/v1/auth/login")
+                .contentType(APPLICATION_JSON)
+                .accept(APPLICATION_JSON)
+                .content(objectMapper.writeValueAsString(loginRequest))
+        );
+
+        result.andDo(print())
+            .andExpect(status().isBadRequest())
+            .andDo(document("user-login-error",
+                preprocessRequest(prettyPrint()),
+                preprocessResponse(prettyPrint()),
+                requestFields(
+                    fieldWithPath("email").description("이메일 주소")
+                        .attributes(key("constraint").value(
+                            "형식에 맞춰 작성 (^[a-zA-Z0-9_!#$%&'*+/=?`{|}~^.-]+@[a-zA-Z0-9.-]+.[a-zA-Z]{2,6}$)")),
+                    fieldWithPath("password").description("비밀번호")
+                ),
+                responseFields(
+                    fieldWithPath("success").description("응답 성공 여부"),
+                    fieldWithPath("response").type(NUMBER).description("로그인한 사용자의 ID").optional(),
+                    fieldWithPath("error").type(OBJECT).ignored(),
+                    fieldWithPath("error.message").description("오류 메시지"),
+                    fieldWithPath("error.details").type(ARRAY).description("오류 필드 목록").optional()
+                )
+            ));
+    }
+
+    @Test
+    @WithMockTestUser
+    @DisplayName("회원 정보 조회")
+    void me() throws Exception {
+        final ResultActions result = mockMvc.perform(
+            get("/api/v1/auth/me")
+                .accept(APPLICATION_JSON)
+        );
+
+        result.andDo(print())
+            .andExpect(status().isOk())
+            .andDo(document("user-me",
+                preprocessResponse(prettyPrint()),
+                responseFields(
+                    fieldWithPath("success").type(BOOLEAN).description("응답 성공 여부"),
+                    fieldWithPath("response").type(OBJECT).description("회원 정보"),
+                    fieldWithPath("response.name").type(STRING).description("회원 이름"),
+                    fieldWithPath("response.email").type(STRING).description("이메일 주소"),
+                    fieldWithPath("response.birth").type(STRING).description("생년월일").optional(),
+                    fieldWithPath("response.profileImage").type(STRING).description("프로필 URL").optional(),
+                    fieldWithPath("response.phoneNumber").type(STRING).description("전화번호").optional(),
+                    fieldWithPath("error").type(OBJECT).ignored()
+                )
+            ));
+    }
+
+    @Getter
+    @Builder
+    private static class EmailPassword {
+
+        private String email;
+
+        private String password;
     }
 }

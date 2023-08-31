@@ -2,6 +2,7 @@ package group.ict.sosservice.user.controller;
 
 import static org.hamcrest.Matchers.is;
 import static org.springframework.http.MediaType.APPLICATION_JSON;
+import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.get;
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.post;
 import static org.springframework.test.web.servlet.result.MockMvcResultHandlers.print;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.jsonPath;
@@ -20,10 +21,11 @@ import org.springframework.test.web.servlet.ResultActions;
 import com.fasterxml.jackson.databind.ObjectMapper;
 
 import group.ict.sosservice.common.annotations.AcceptanceTest;
+import group.ict.sosservice.common.annotations.WithMockTestUser;
 import group.ict.sosservice.user.controller.dto.SignUpRequest;
-import group.ict.sosservice.user.domain.Role;
-import group.ict.sosservice.user.domain.User;
-import group.ict.sosservice.user.domain.UserRepository;
+import group.ict.sosservice.user.model.Role;
+import group.ict.sosservice.user.model.User;
+import group.ict.sosservice.user.model.UserRepository;
 import lombok.Builder;
 import lombok.Getter;
 
@@ -160,17 +162,11 @@ class AuthControllerTest {
     }
 
     @Test
+    @WithMockTestUser
     @DisplayName("로그인한다.")
     void login() throws Exception {
-        userRepository.save(User.builder()
-            .name("name")
-            .password(encoder.encode("1234"))
-            .email("lsh901673@gmail.com")
-            .role(Role.USER)
-            .build());
-
         final EmailPassword loginRequest = EmailPassword.builder()
-            .email("lsh901673@gmail.com")
+            .email("test-user@gmail.com")
             .password("1234")
             .build();
 
@@ -186,17 +182,11 @@ class AuthControllerTest {
     }
 
     @Test
+    @WithMockTestUser
     @DisplayName("로그인 요청 시 올바른 아이디/비밀번호를 입력해야 한다.")
     void givenInvalidCredential_thenErrorResponse() throws Exception {
-        userRepository.save(User.builder()
-            .name("name")
-            .password(encoder.encode("1234"))
-            .email("lsh901673@gmail.com")
-            .role(Role.USER)
-            .build());
-
         final EmailPassword loginRequest = EmailPassword.builder()
-            .email("lsh901673@gmail.com")
+            .email("test-user@gmail.com")
             .password("wrong-password")
             .build();
 
@@ -214,9 +204,34 @@ class AuthControllerTest {
             .andExpect(jsonPath("$.error.message", is("아이디 혹은 비밀번호가 올바르지 않습니다.")));
     }
 
+    @Test
+    @WithMockTestUser
+    @DisplayName("로그아웃한다.")
+    void logout() throws Exception {
+        mockMvc.perform(
+                post("/api/v1/auth/logout")
+            ).andDo(print())
+            .andExpect(status().isOk());
+    }
+
+    @Test
+    @WithMockTestUser
+    @DisplayName("회원정보를 조회한다.")
+    void me() throws Exception {
+        final ResultActions result = mockMvc.perform(
+            get("/api/v1/auth/me")
+        );
+
+        result.andDo(print())
+            .andExpect(status().isOk())
+            .andExpect(jsonPath("$.success", is(true)))
+            .andExpect(jsonPath("$.response").exists())
+            .andExpect(jsonPath("$.error").isEmpty());
+    }
+
     @Getter
     @Builder
-    private static class EmailPassword {
+    static class EmailPassword {
 
         private String email;
 

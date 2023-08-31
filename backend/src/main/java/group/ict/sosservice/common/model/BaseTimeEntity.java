@@ -1,4 +1,4 @@
-package group.ict.sosservice.common.domain;
+package group.ict.sosservice.common.model;
 
 import java.time.LocalDateTime;
 
