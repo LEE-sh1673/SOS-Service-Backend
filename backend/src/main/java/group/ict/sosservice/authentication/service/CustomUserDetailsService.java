@@ -7,9 +7,9 @@ import org.springframework.stereotype.Service;
 
 import group.ict.sosservice.authentication.service.dto.UserPrincipal;
 import group.ict.sosservice.common.exception.ErrorType;
-import group.ict.sosservice.user.domain.Email;
-import group.ict.sosservice.user.domain.User;
-import group.ict.sosservice.user.domain.UserRepository;
+import group.ict.sosservice.user.model.Email;
+import group.ict.sosservice.user.model.User;
+import group.ict.sosservice.user.model.UserRepository;
 import group.ict.sosservice.user.exception.InvalidMemberException;
 import lombok.RequiredArgsConstructor;
 

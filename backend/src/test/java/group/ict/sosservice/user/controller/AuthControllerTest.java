@@ -21,9 +21,9 @@ import com.fasterxml.jackson.databind.ObjectMapper;
 
 import group.ict.sosservice.common.annotations.AcceptanceTest;
 import group.ict.sosservice.user.controller.dto.SignUpRequest;
-import group.ict.sosservice.user.domain.Role;
-import group.ict.sosservice.user.domain.User;
-import group.ict.sosservice.user.domain.UserRepository;
+import group.ict.sosservice.user.model.Role;
+import group.ict.sosservice.user.model.User;
+import group.ict.sosservice.user.model.UserRepository;
 import lombok.Builder;
 import lombok.Getter;
 
