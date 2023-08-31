@@ -14,12 +14,15 @@ import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.security.web.SecurityFilterChain;
 import org.springframework.security.web.authentication.RememberMeServices;
 import org.springframework.security.web.authentication.UsernamePasswordAuthenticationFilter;
+import org.springframework.security.web.authentication.rememberme.PersistentTokenBasedRememberMeServices;
+import org.springframework.security.web.authentication.rememberme.PersistentTokenRepository;
 import org.springframework.security.web.context.HttpSessionSecurityContextRepository;
-import org.springframework.session.security.web.authentication.SpringSessionRememberMeServices;
 
 import com.fasterxml.jackson.databind.ObjectMapper;
 
 import group.ict.sosservice.authentication.filter.EmailPasswordAuthFilter;
+import group.ict.sosservice.authentication.handler.CustomLogoutHandler;
+import group.ict.sosservice.authentication.handler.CustomLogoutSuccessHandler;
 import group.ict.sosservice.authentication.handler.LoginFailHandler;
 import group.ict.sosservice.authentication.handler.LoginSuccessHandler;
 import group.ict.sosservice.authentication.service.CustomUserDetailsService;
@@ -34,14 +37,19 @@ public class SecurityConfig {
 
     private final CustomUserDetailsService userDetailsService;
 
+    private final PersistentTokenRepository persistentTokenRepository;
+
     @Value("${security.authentication.validity-seconds}")
     private long validityInSeconds;
+
+    @Value("${security.authentication.remember-me-key}")
+    private String rememberMeKey;
 
     @Bean
     public SecurityFilterChain defaultSecurityFilterChain(final HttpSecurity http)
         throws Exception {
         http.csrf().disable();
-        http.headers().frameOptions().disable();
+        http.headers().frameOptions().sameOrigin();
         http.authorizeHttpRequests((httpRequests) -> httpRequests
             .antMatchers("/docs/**").permitAll()
             .antMatchers("/h2-console/**").permitAll()
@@ -52,6 +60,14 @@ public class SecurityConfig {
         http.addFilterBefore(
             emailPasswordAuthFilter(),
             UsernamePasswordAuthenticationFilter.class
+        );
+        http.logout(logout -> logout
+            .logoutUrl("/api/v1/auth/logout")
+            .addLogoutHandler(new CustomLogoutHandler(persistentTokenRepository))
+            .logoutSuccessHandler(new CustomLogoutSuccessHandler())
+        );
+        http.rememberMe(rm -> rm
+            .rememberMeServices(rememberMeServices())
         );
         return http.build();
     }
@@ -71,10 +87,16 @@ public class SecurityConfig {
 
     @Bean
     public RememberMeServices rememberMeServices() {
-        SpringSessionRememberMeServices rememberMeServices = new SpringSessionRememberMeServices();
-        rememberMeServices.setValiditySeconds(Math.toIntExact(validityInSeconds));
-        rememberMeServices.setRememberMeParameterName("remember_me");
+        PersistentTokenBasedRememberMeServices rememberMeServices = new PersistentTokenBasedRememberMeServices(
+            rememberMeKey,
+            userDetailsService,
+            persistentTokenRepository
+        );
         rememberMeServices.setAlwaysRemember(true);
+        rememberMeServices.setParameter("remember");
+        rememberMeServices.setCookieName("remember");
+        rememberMeServices.setUseSecureCookie(true);
+        rememberMeServices.setTokenValiditySeconds(Math.toIntExact(validityInSeconds));
         return rememberMeServices;
     }
 

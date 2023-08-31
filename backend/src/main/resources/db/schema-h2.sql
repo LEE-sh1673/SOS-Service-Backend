@@ -13,3 +13,11 @@ create table user (
     modified_at datetime(6) not null,
     primary key (id)
 );
+
+create table persistent_logins (
+    username varchar(64) not null,
+    series varchar(64) not null,
+    token varchar(64) not null,
+    last_used timestamp not null,
+    primary key (series)
+);
