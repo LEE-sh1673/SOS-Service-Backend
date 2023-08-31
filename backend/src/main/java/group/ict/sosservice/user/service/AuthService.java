@@ -11,6 +11,7 @@ import group.ict.sosservice.user.model.User;
 import group.ict.sosservice.user.model.UserRepository;
 import group.ict.sosservice.user.exception.InvalidMemberException;
 import group.ict.sosservice.user.service.dto.SignUpRequestDto;
+import group.ict.sosservice.user.service.dto.UserResponseDto;
 import lombok.RequiredArgsConstructor;
 
 @Service
@@ -49,5 +50,18 @@ public class AuthService {
 
     private String encodePassword(final String rawPassword) {
         return passwordEncoder.encode(rawPassword);
+    }
+
+    public UserResponseDto findOne(final Long userId) {
+        final User user = userRepository.findById(userId)
+            .orElseThrow(() -> new InvalidMemberException(ErrorType.NOT_FOUND_MEMBER));
+
+        return UserResponseDto.builder()
+            .name(user.getName())
+            .email(user.getEmail().getValue())
+            .birth(user.getBirth())
+            .profileImage(user.getProfileImage())
+            .phoneNumber(user.getPhoneNumber())
+            .build();
     }
 }

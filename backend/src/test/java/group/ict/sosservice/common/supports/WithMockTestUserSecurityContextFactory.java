@@ -1,8 +1,11 @@
 package group.ict.sosservice.common.supports;
 
+import java.time.LocalDate;
+
 import org.springframework.security.authentication.UsernamePasswordAuthenticationToken;
 import org.springframework.security.core.context.SecurityContext;
 import org.springframework.security.core.context.SecurityContextHolder;
+import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.security.test.context.support.WithSecurityContextFactory;
 
 import group.ict.sosservice.authentication.service.dto.UserPrincipal;
@@ -18,11 +21,17 @@ public class WithMockTestUserSecurityContextFactory
 
     private final UserRepository userRepository;
 
+    private final PasswordEncoder encoder;
+
     @Override
     public SecurityContext createSecurityContext(final WithMockTestUser withUser) {
         final User user = userRepository.save(User.builder()
-            .password(withUser.password())
+            .name(withUser.name())
             .email(withUser.email())
+            .password(encoder.encode(withUser.password()))
+            .birth(LocalDate.now())
+            .profileImage(withUser.profileImage())
+            .phoneNumber(withUser.phoneNumber())
             .role(Role.valueOf(withUser.role()))
             .build()
         );
