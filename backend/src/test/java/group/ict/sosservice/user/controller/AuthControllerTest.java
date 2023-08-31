@@ -19,7 +19,9 @@ import org.springframework.test.web.servlet.ResultActions;
 
 import com.fasterxml.jackson.databind.ObjectMapper;
 
+import group.ict.sosservice.authentication.model.RememberMeTokenRepository;
 import group.ict.sosservice.common.annotations.AcceptanceTest;
+import group.ict.sosservice.common.annotations.WithMockTestUser;
 import group.ict.sosservice.user.controller.dto.SignUpRequest;
 import group.ict.sosservice.user.model.Role;
 import group.ict.sosservice.user.model.User;
@@ -42,6 +44,9 @@ class AuthControllerTest {
 
     @Autowired
     private PasswordEncoder encoder;
+
+    @Autowired
+    private RememberMeTokenRepository tokenRepository;
 
     @Test
     @DisplayName("회원가입한다.")
@@ -212,6 +217,16 @@ class AuthControllerTest {
             .andExpect(jsonPath("$.success", is(false)))
             .andExpect(jsonPath("$.error").exists())
             .andExpect(jsonPath("$.error.message", is("아이디 혹은 비밀번호가 올바르지 않습니다.")));
+    }
+
+    @Test
+    @WithMockTestUser
+    @DisplayName("로그아웃한다.")
+    void logout() throws Exception {
+        mockMvc.perform(
+                post("/api/v1/auth/logout")
+            ).andDo(print())
+            .andExpect(status().isOk());
     }
 
     @Getter

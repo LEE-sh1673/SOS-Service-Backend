@@ -142,7 +142,8 @@ jacocoTestReport {
             fileTree(dir: it,
                     exclude: [
                             '*SosServiceApplication*',
-                            '*H2DevConfig*'
+                            '*H2DevConfig*',
+                            '*JpaPersistentTokenRepository*'
                     ] + Qdomains)
         }))
     }
@@ -181,7 +182,8 @@ jacocoTestCoverageVerification {
 
             excludes = [
                     "*SosServiceApplication*",
-                    '*H2DevConfig*'
+                    '*H2DevConfig*',
+                    '*JpaPersistentTokenRepository*'
             ] + Qdomains
         }
     }
