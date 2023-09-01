@@ -12,19 +12,15 @@ import lombok.NoArgsConstructor;
 @Builder
 @NoArgsConstructor(access = AccessLevel.PROTECTED)
 @AllArgsConstructor
-public class UserResponseDto {
-
-    private String email;
+public class UserEditRequestDto {
 
     private String name;
 
-    private LocalDate birth;
+    private String password;
 
-    private String phoneNumber;
+    private LocalDate birth;
 
     private String profileImage;
 
-    public void setEmail(final String email) {
-        this.email = email;
-    }
+    private String phoneNumber;
 }

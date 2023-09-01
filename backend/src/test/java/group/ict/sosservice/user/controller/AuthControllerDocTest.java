@@ -3,6 +3,7 @@ package group.ict.sosservice.user.controller;
 import static org.springframework.http.MediaType.APPLICATION_JSON;
 import static org.springframework.restdocs.mockmvc.MockMvcRestDocumentation.document;
 import static org.springframework.restdocs.mockmvc.RestDocumentationRequestBuilders.post;
+import static org.springframework.restdocs.mockmvc.RestDocumentationRequestBuilders.put;
 import static org.springframework.restdocs.mockmvc.RestDocumentationRequestBuilders.get;
 import static org.springframework.restdocs.operation.preprocess.Preprocessors.preprocessRequest;
 import static org.springframework.restdocs.operation.preprocess.Preprocessors.preprocessResponse;
@@ -26,18 +27,15 @@ import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.autoconfigure.restdocs.AutoConfigureRestDocs;
 import org.springframework.boot.test.autoconfigure.web.servlet.AutoConfigureMockMvc;
-import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.test.web.servlet.MockMvc;
 import org.springframework.test.web.servlet.ResultActions;
 
-import com.fasterxml.jackson.core.JsonProcessingException;
 import com.fasterxml.jackson.databind.ObjectMapper;
 
 import group.ict.sosservice.common.annotations.AcceptanceTest;
 import group.ict.sosservice.common.annotations.WithMockTestUser;
 import group.ict.sosservice.user.controller.dto.SignUpRequest;
-import group.ict.sosservice.user.model.Role;
-import group.ict.sosservice.user.model.User;
+import group.ict.sosservice.user.controller.dto.UserEditRequest;
 import lombok.Builder;
 import lombok.Getter;
 
@@ -238,6 +236,44 @@ public class AuthControllerDocTest {
                     fieldWithPath("response.profileImage").type(STRING).description("프로필 URL").optional(),
                     fieldWithPath("response.phoneNumber").type(STRING).description("전화번호").optional(),
                     fieldWithPath("error").type(OBJECT).ignored()
+                )
+            ));
+    }
+
+    @Test
+    @WithMockTestUser
+    @DisplayName("회원 정보 수정")
+    void edit() throws Exception {
+        final UserEditRequest editRequest = UserEditRequest.builder()
+            .name("modifiedName")
+            .password("password-1234")
+            .birth(LocalDate.now())
+            .profileImage("modified.jpg")
+            .phoneNumber("010-1234-5678")
+            .build();
+
+        final ResultActions result = mockMvc.perform(
+            put("/api/v1/auth/me")
+                .accept(APPLICATION_JSON)
+                .contentType(APPLICATION_JSON)
+                .accept(APPLICATION_JSON)
+                .content(objectMapper.writeValueAsString(editRequest))
+        );
+
+        result.andDo(print())
+            .andExpect(status().isOk())
+            .andDo(document("user-edit",
+                preprocessRequest(prettyPrint()),
+                requestFields(
+                    fieldWithPath("name").description("회원 이름"),
+                    fieldWithPath("password").description("비밀번호"),
+                    fieldWithPath("birth")
+                        .description("생년월일").optional()
+                        .attributes(key("constraint").value("형식에 맞춰 작성 (yyyy-MM-dd)")),
+                    fieldWithPath("profileImage").description("프로필 URL").optional(),
+                    fieldWithPath("phoneNumber")
+                        .description("전화번호").optional()
+                        .attributes(key("constraint").value("형식에 맞춰 작성 (01x-xxx(x)-xxxx) "))
                 )
             ));
     }

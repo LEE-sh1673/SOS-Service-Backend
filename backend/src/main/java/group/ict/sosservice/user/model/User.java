@@ -57,4 +57,46 @@ public class User extends BaseTimeEntity {
         this.profileImage = profileImage;
         this.role = role;
     }
+
+    public void updatePassword(final String password) {
+        this.password = password;
+    }
+
+    public void updateEmail(final String email) {
+        this.email = new Email(email);
+    }
+
+    public void updateRole(final Role role) {
+        this.role = role;
+    }
+
+    public UserEditor.UserEditorBuilder toEditor() {
+        return UserEditor.builder()
+            .name(name)
+            .password(password)
+            .birth(birth)
+            .profileImage(profileImage)
+            .phoneNumber(phoneNumber);
+    }
+
+    public void edit(final UserEditor editor) {
+        this.name = editor.getName();
+        this.password = editor.getPassword();
+        this.birth = editor.getBirth();
+        this.profileImage = editor.getProfileImage();
+        this.phoneNumber = editor.getPhoneNumber();
+    }
+
+    @Override
+    public String toString() {
+        return "User{" +
+            ", name='" + name + '\'' +
+            ", email=" + email +
+            ", password='" + password + '\'' +
+            ", birth=" + birth +
+            ", phoneNumber='" + phoneNumber + '\'' +
+            ", profileImage='" + profileImage + '\'' +
+            ", role=" + role +
+            '}';
+    }
 }

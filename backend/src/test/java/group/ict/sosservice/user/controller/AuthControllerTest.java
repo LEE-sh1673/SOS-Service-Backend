@@ -4,6 +4,7 @@ import static org.hamcrest.Matchers.is;
 import static org.springframework.http.MediaType.APPLICATION_JSON;
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.get;
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.post;
+import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.put;
 import static org.springframework.test.web.servlet.result.MockMvcResultHandlers.print;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.jsonPath;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.status;
@@ -23,8 +24,7 @@ import com.fasterxml.jackson.databind.ObjectMapper;
 import group.ict.sosservice.common.annotations.AcceptanceTest;
 import group.ict.sosservice.common.annotations.WithMockTestUser;
 import group.ict.sosservice.user.controller.dto.SignUpRequest;
-import group.ict.sosservice.user.model.Role;
-import group.ict.sosservice.user.model.User;
+import group.ict.sosservice.user.controller.dto.UserEditRequest;
 import group.ict.sosservice.user.model.UserRepository;
 import lombok.Builder;
 import lombok.Getter;
@@ -46,7 +46,7 @@ class AuthControllerTest {
     private PasswordEncoder encoder;
 
     @Test
-    @DisplayName("회원가입한다.")
+    @DisplayName("회원가입 할 수 있다.")
     void signup() throws Exception {
         final SignUpRequest signUpRequest = SignUpRequest.builder()
             .name("홍길동")
@@ -163,7 +163,7 @@ class AuthControllerTest {
 
     @Test
     @WithMockTestUser
-    @DisplayName("로그인한다.")
+    @DisplayName("로그인 할 수 있다.")
     void login() throws Exception {
         final EmailPassword loginRequest = EmailPassword.builder()
             .email("test-user@gmail.com")
@@ -206,7 +206,7 @@ class AuthControllerTest {
 
     @Test
     @WithMockTestUser
-    @DisplayName("로그아웃한다.")
+    @DisplayName("로그아웃 할 수 있다.")
     void logout() throws Exception {
         mockMvc.perform(
                 post("/api/v1/auth/logout")
@@ -216,7 +216,7 @@ class AuthControllerTest {
 
     @Test
     @WithMockTestUser
-    @DisplayName("회원정보를 조회한다.")
+    @DisplayName("회원정보를 조회할 수 있다.")
     void me() throws Exception {
         final ResultActions result = mockMvc.perform(
             get("/api/v1/auth/me")
@@ -227,6 +227,53 @@ class AuthControllerTest {
             .andExpect(jsonPath("$.success", is(true)))
             .andExpect(jsonPath("$.response").exists())
             .andExpect(jsonPath("$.error").isEmpty());
+    }
+
+    @Test
+    @WithMockTestUser
+    @DisplayName("회원정보를 수정할 수 있다.")
+    void edit() throws Exception {
+        final UserEditRequest editRequest = UserEditRequest.builder()
+            .name("modifiedName")
+            .password("password-1234")
+            .birth(LocalDate.now())
+            .profileImage("modified.jpg")
+            .phoneNumber("010-1234-5678")
+            .build();
+
+        final ResultActions result = mockMvc.perform(
+            put("/api/v1/auth/me")
+                .contentType(APPLICATION_JSON)
+                .accept(APPLICATION_JSON)
+                .content(objectMapper.writeValueAsString(editRequest))
+        );
+
+        result.andDo(print())
+            .andExpect(status().isOk());
+    }
+
+    @Test
+    @WithMockTestUser
+    @DisplayName("회원정보 수정 시 이름/비밀번호는 필수이다.")
+    void givenInvalidEditRequest_thenErrorResponse() throws Exception {
+        final UserEditRequest editRequest = UserEditRequest.builder()
+            .name(null)
+            .password(null)
+            .build();
+
+        final ResultActions result = mockMvc.perform(
+            put("/api/v1/auth/me")
+                .contentType(APPLICATION_JSON)
+                .accept(APPLICATION_JSON)
+                .content(objectMapper.writeValueAsString(editRequest))
+        );
+
+        result.andDo(print())
+            .andExpect(status().isBadRequest())
+            .andExpect(jsonPath("$.success", is(false)))
+            .andExpect(jsonPath("$.error").exists())
+            .andExpect(jsonPath("$.error.details").exists())
+            .andExpect(jsonPath("$.error.details.length()", is(2)));
     }
 
     @Getter

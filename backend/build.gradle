@@ -45,6 +45,9 @@ ext {
 dependencies {
     developmentOnly 'org.springframework.boot:spring-boot-devtools'
 
+    //== model mapper
+    implementation 'org.modelmapper:modelmapper:3.0.0'
+
     //== spring session
     implementation 'org.springframework.session:spring-session-jdbc'
 
