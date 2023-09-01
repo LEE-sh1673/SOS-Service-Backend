@@ -4,6 +4,7 @@ import static group.ict.sosservice.common.utils.ApiUtils.success;
 
 import javax.validation.Valid;
 
+import org.modelmapper.ModelMapper;
 import org.springframework.http.ResponseEntity;
 import org.springframework.security.core.annotation.AuthenticationPrincipal;
 import org.springframework.web.bind.annotation.GetMapping;
@@ -16,6 +17,7 @@ import group.ict.sosservice.authentication.service.dto.UserPrincipal;
 import group.ict.sosservice.common.utils.ApiUtils;
 import group.ict.sosservice.user.controller.dto.SignUpRequest;
 import group.ict.sosservice.user.service.AuthService;
+import group.ict.sosservice.user.service.dto.SignUpRequestDto;
 import lombok.RequiredArgsConstructor;
 
 @RestController
@@ -25,9 +27,11 @@ public class AuthController {
 
     private final AuthService authService;
 
+    private final ModelMapper modelMapper;
+
     @PostMapping("/signup")
     public ResponseEntity<?> signup(@RequestBody @Valid final SignUpRequest request) {
-        authService.signup(request.toServiceDto());
+        authService.signup(modelMapper.map(request, SignUpRequestDto.class));
         return ResponseEntity.ok().build();
     }
 

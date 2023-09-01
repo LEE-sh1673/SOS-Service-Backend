@@ -23,4 +23,8 @@ public class UserResponseDto {
     private String phoneNumber;
 
     private String profileImage;
+
+    public void setEmail(final String email) {
+        this.email = email;
+    }
 }

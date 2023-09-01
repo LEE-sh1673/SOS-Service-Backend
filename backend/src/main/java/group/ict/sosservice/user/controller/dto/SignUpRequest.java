@@ -41,15 +41,4 @@ public class SignUpRequest {
     private String phoneNumber;
 
     private String profileImage;
-
-    public SignUpRequestDto toServiceDto() {
-        return SignUpRequestDto.builder()
-            .email(email)
-            .password(password)
-            .name(name)
-            .birth(birth)
-            .phoneNumber(phoneNumber)
-            .profileImage(profileImage)
-            .build();
-    }
 }

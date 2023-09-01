@@ -3,6 +3,8 @@ package group.ict.sosservice.user.service;
 import static org.junit.jupiter.api.Assertions.assertEquals;
 import static org.junit.jupiter.api.Assertions.assertTrue;
 
+import java.time.LocalDate;
+
 import org.assertj.core.api.Assertions;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
@@ -37,6 +39,9 @@ class AuthServiceTest {
             .name("name-1")
             .password("password-1")
             .email("lsh@gmail.com")
+            .birth(LocalDate.now())
+            .profileImage("test.com/test.jpg")
+            .phoneNumber("010-1234-5678")
             .build();
 
         authService.signup(request);
@@ -46,6 +51,10 @@ class AuthServiceTest {
         assertEquals(Email.of(request.getEmail()), user.getEmail());
         assertTrue(encoder.matches(request.getPassword(), user.getPassword()));
         assertEquals(request.getName(), user.getName());
+        assertEquals(new Email(request.getEmail()), user.getEmail());
+        assertEquals(request.getBirth(), user.getBirth());
+        assertEquals(request.getProfileImage(), user.getProfileImage());
+        assertEquals(request.getPhoneNumber(), user.getPhoneNumber());
     }
 
     @Test
