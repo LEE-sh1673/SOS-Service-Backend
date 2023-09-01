@@ -9,8 +9,10 @@ import group.ict.sosservice.common.exception.ErrorType;
 import group.ict.sosservice.user.exception.InvalidMemberException;
 import group.ict.sosservice.user.model.Email;
 import group.ict.sosservice.user.model.User;
+import group.ict.sosservice.user.model.UserEditor;
 import group.ict.sosservice.user.model.UserRepository;
 import group.ict.sosservice.user.service.dto.SignUpRequestDto;
+import group.ict.sosservice.user.service.dto.UserEditRequestDto;
 import group.ict.sosservice.user.service.dto.UserResponseDto;
 import lombok.RequiredArgsConstructor;
 
@@ -53,8 +55,24 @@ public class AuthService {
         return modelMapper.map(findById(userId), UserResponseDto.class);
     }
 
+    @Transactional
+    public void edit(final Long userId, final UserEditRequestDto request) {
+        final User user = findById(userId);
+        user.edit(getUserEditor(user, request));
+    }
+
     private User findById(final Long userId) {
         return userRepository.findById(userId)
             .orElseThrow(() -> new InvalidMemberException(ErrorType.NOT_FOUND_MEMBER));
+    }
+
+    private UserEditor getUserEditor(final User user, final UserEditRequestDto request) {
+        return user.toEditor()
+            .name(request.getName())
+            .password(encodePassword(request.getPassword()))
+            .birth(request.getBirth())
+            .profileImage(request.getProfileImage())
+            .phoneNumber(request.getPhoneNumber())
+            .build();
     }
 }
