@@ -86,17 +86,4 @@ public class User extends BaseTimeEntity {
         this.profileImage = editor.getProfileImage();
         this.phoneNumber = editor.getPhoneNumber();
     }
-
-    @Override
-    public String toString() {
-        return "User{" +
-            ", name='" + name + '\'' +
-            ", email=" + email +
-            ", password='" + password + '\'' +
-            ", birth=" + birth +
-            ", phoneNumber='" + phoneNumber + '\'' +
-            ", profileImage='" + profileImage + '\'' +
-            ", role=" + role +
-            '}';
-    }
 }
