@@ -136,7 +136,7 @@ public class AuthControllerDocTest {
                     fieldWithPath("error").type(OBJECT).ignored(),
                     fieldWithPath("error.message").description("오류 메시지"),
                     fieldWithPath("error.details").type(ARRAY).description("오류 필드 목록").optional(),
-                    fieldWithPath("error.details[].param").description("오류 핃드명").optional(),
+                    fieldWithPath("error.details[].param").description("오류 필드명").optional(),
                     fieldWithPath("error.details[].message").description("오류 필드 상세 메시지").optional()
                 )
             ));
@@ -274,6 +274,54 @@ public class AuthControllerDocTest {
                     fieldWithPath("phoneNumber")
                         .description("전화번호").optional()
                         .attributes(key("constraint").value("형식에 맞춰 작성 (01x-xxx(x)-xxxx) "))
+                )
+            ));
+    }
+
+    @Test
+    @WithMockTestUser
+    @DisplayName("회원 정보 수정 시 이름/비밀번호는 필수이다.")
+    void givenInvalidEditRequest_thenErrorResponse() throws Exception {
+        final UserEditRequest editRequest = UserEditRequest.builder()
+            .name(null)
+            .password(null)
+            .birth(LocalDate.now())
+            .profileImage("modified.jpg")
+            .phoneNumber("010-1234-5678")
+            .build();
+
+        final ResultActions result = mockMvc.perform(
+            put("/api/v1/auth/me")
+                .accept(APPLICATION_JSON)
+                .contentType(APPLICATION_JSON)
+                .accept(APPLICATION_JSON)
+                .content(objectMapper.writeValueAsString(editRequest))
+        );
+
+        result.andDo(print())
+            .andExpect(status().isBadRequest())
+            .andDo(document("user-edit-error",
+                preprocessRequest(prettyPrint()),
+                preprocessResponse(prettyPrint()),
+                requestFields(
+                    fieldWithPath("name").description("회원 이름"),
+                    fieldWithPath("password").description("비밀번호"),
+                    fieldWithPath("birth")
+                        .description("생년월일").optional()
+                        .attributes(key("constraint").value("형식에 맞춰 작성 (yyyy-MM-dd)")),
+                    fieldWithPath("profileImage").description("프로필 URL").optional(),
+                    fieldWithPath("phoneNumber")
+                        .description("전화번호").optional()
+                        .attributes(key("constraint").value("형식에 맞춰 작성 (01x-xxx(x)-xxxx) "))
+                ),
+                responseFields(
+                    fieldWithPath("success").description("응답 성공 여부"),
+                    fieldWithPath("response").type(OBJECT).ignored(),
+                    fieldWithPath("error").type(OBJECT).ignored(),
+                    fieldWithPath("error.message").description("오류 메시지"),
+                    fieldWithPath("error.details").type(ARRAY).description("오류 필드 목록").optional(),
+                    fieldWithPath("error.details[].param").description("오류 필드명").optional(),
+                    fieldWithPath("error.details[].message").description("오류 필드 상세 메시지").optional()
                 )
             ));
     }
