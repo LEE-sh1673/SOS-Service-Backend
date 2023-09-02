@@ -6,6 +6,7 @@ import org.springframework.context.annotation.Configuration;
 import org.springframework.http.HttpMethod;
 import org.springframework.security.authentication.AuthenticationManager;
 import org.springframework.security.authentication.ProviderManager;
+import org.springframework.security.authentication.RememberMeAuthenticationProvider;
 import org.springframework.security.authentication.dao.DaoAuthenticationProvider;
 import org.springframework.security.config.annotation.web.builders.HttpSecurity;
 import org.springframework.security.config.annotation.web.configuration.EnableWebSecurity;
@@ -14,8 +15,10 @@ import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.security.web.SecurityFilterChain;
 import org.springframework.security.web.authentication.RememberMeServices;
 import org.springframework.security.web.authentication.UsernamePasswordAuthenticationFilter;
+import org.springframework.security.web.authentication.rememberme.AbstractRememberMeServices;
 import org.springframework.security.web.authentication.rememberme.PersistentTokenBasedRememberMeServices;
 import org.springframework.security.web.authentication.rememberme.PersistentTokenRepository;
+import org.springframework.security.web.authentication.rememberme.RememberMeAuthenticationFilter;
 import org.springframework.security.web.context.HttpSessionSecurityContextRepository;
 
 import com.fasterxml.jackson.databind.ObjectMapper;
@@ -61,20 +64,24 @@ public class SecurityConfig {
             emailPasswordAuthFilter(),
             UsernamePasswordAuthenticationFilter.class
         );
+        http.addFilterBefore(
+            rememberMeFilter(),
+            EmailPasswordAuthFilter.class
+        );
         http.logout(logout -> logout
             .logoutUrl("/api/v1/auth/logout")
             .addLogoutHandler(new CustomLogoutHandler(persistentTokenRepository))
             .logoutSuccessHandler(new CustomLogoutSuccessHandler())
-        );
-        http.rememberMe(rm -> rm
-            .rememberMeServices(rememberMeServices())
         );
         return http.build();
     }
 
     @Bean
     public EmailPasswordAuthFilter emailPasswordAuthFilter() {
-        EmailPasswordAuthFilter filter = new EmailPasswordAuthFilter("/api/v1/auth/login", objectMapper);
+        EmailPasswordAuthFilter filter = new EmailPasswordAuthFilter(
+            "/api/v1/auth/login",
+            objectMapper
+        );
 
         filter.setRememberMeServices(rememberMeServices());
         filter.setAuthenticationManager(authenticationManager());
@@ -86,30 +93,59 @@ public class SecurityConfig {
     }
 
     @Bean
-    public RememberMeServices rememberMeServices() {
-        PersistentTokenBasedRememberMeServices rememberMeServices = new PersistentTokenBasedRememberMeServices(
-            rememberMeKey,
-            userDetailsService,
-            persistentTokenRepository
+    RememberMeAuthenticationFilter rememberMeFilter() {
+        return new RememberMeAuthenticationFilter(
+            authenticationManager(),
+            rememberMeServices()
         );
-        rememberMeServices.setAlwaysRemember(true);
-        rememberMeServices.setParameter("remember");
-        rememberMeServices.setCookieName("remember");
-        rememberMeServices.setUseSecureCookie(true);
-        rememberMeServices.setTokenValiditySeconds(Math.toIntExact(validityInSeconds));
-        return rememberMeServices;
     }
 
     @Bean
     public AuthenticationManager authenticationManager() {
-        DaoAuthenticationProvider provider = new DaoAuthenticationProvider();
+        return new ProviderManager(
+            daoAuthenticationProvider(),
+            rememberMeAuthenticationProvider()
+        );
+    }
+
+    @Bean
+    public DaoAuthenticationProvider daoAuthenticationProvider() {
+        final DaoAuthenticationProvider provider = new DaoAuthenticationProvider();
         provider.setUserDetailsService(userDetailsService);
         provider.setPasswordEncoder(passwordEncoder());
-        return new ProviderManager(provider);
+        return provider;
     }
 
     @Bean
     public PasswordEncoder passwordEncoder() {
         return PasswordEncoderFactories.createDelegatingPasswordEncoder();
+    }
+
+    @Bean
+    public RememberMeAuthenticationProvider rememberMeAuthenticationProvider() {
+        return new RememberMeAuthenticationProvider(rememberMeKey);
+    }
+
+    @Bean
+    public RememberMeServices rememberMeServices() {
+        final AbstractRememberMeServices rememberMeServices = getRememberMeServices();
+        rememberMeServices.setParameter("remember");
+        rememberMeServices.setCookieName("remember");
+        rememberMeServices.setAlwaysRemember(true);
+        rememberMeServices.setUseSecureCookie(true);
+        rememberMeServices.setTokenValiditySeconds(Math.toIntExact(validityInSeconds));
+        return rememberMeServices;
+    }
+
+    private AbstractRememberMeServices getRememberMeServices() {
+        // return new TokenBasedRememberMeServices(
+        //     rememberMeKey,
+        //     userDetailsService
+        // );
+        return new PersistentTokenBasedRememberMeServices(
+            rememberMeKey,
+            userDetailsService,
+            persistentTokenRepository
+        );
     }
 }
