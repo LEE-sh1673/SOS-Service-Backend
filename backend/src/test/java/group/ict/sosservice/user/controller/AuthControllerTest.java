@@ -6,17 +6,20 @@ import static org.springframework.test.web.servlet.request.MockMvcRequestBuilder
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.post;
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.put;
 import static org.springframework.test.web.servlet.result.MockMvcResultHandlers.print;
+import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.header;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.jsonPath;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.status;
 
 import java.time.LocalDate;
 
+import org.junit.jupiter.api.Assertions;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.autoconfigure.web.servlet.AutoConfigureMockMvc;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.test.web.servlet.MockMvc;
+import org.springframework.test.web.servlet.MvcResult;
 import org.springframework.test.web.servlet.ResultActions;
 
 import com.fasterxml.jackson.databind.ObjectMapper;
@@ -179,6 +182,36 @@ class AuthControllerTest {
 
         result.andDo(print())
             .andExpect(status().isOk());
+    }
+
+    @Test
+    @WithMockTestUser
+    @DisplayName("자동 로그인을 요청할 수 있다.")
+    void remember_me_login() throws Exception {
+        final EmailPassword loginRequest = EmailPassword.builder()
+            .email("test-user@gmail.com")
+            .password("1234")
+            .build();
+
+        final ResultActions result = mockMvc.perform(
+            post("/api/v1/auth/login")
+                .param("remember", "true")
+                .contentType(APPLICATION_JSON)
+                .accept(APPLICATION_JSON)
+                .content(objectMapper.writeValueAsString(loginRequest))
+        );
+
+        final MvcResult mvcResult = result.andDo(print())
+            .andExpect(status().isOk())
+            .andExpect(jsonPath("$.success", is(true)))
+            .andExpect(header().exists("Set-Cookie"))
+            .andReturn();
+
+        final String cookies = mvcResult.getResponse()
+            .getHeader("Set-Cookie");
+
+        Assertions.assertNotNull(cookies);
+        Assertions.assertTrue(cookies.matches("^remember.*"));
     }
 
     @Test

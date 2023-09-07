@@ -1,5 +1,7 @@
 package group.ict.sosservice.common.config;
 
+import java.util.List;
+
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
@@ -20,6 +22,9 @@ import org.springframework.security.web.authentication.rememberme.PersistentToke
 import org.springframework.security.web.authentication.rememberme.PersistentTokenRepository;
 import org.springframework.security.web.authentication.rememberme.RememberMeAuthenticationFilter;
 import org.springframework.security.web.context.HttpSessionSecurityContextRepository;
+import org.springframework.web.cors.CorsConfiguration;
+import org.springframework.web.cors.CorsConfigurationSource;
+import org.springframework.web.cors.UrlBasedCorsConfigurationSource;
 
 import com.fasterxml.jackson.databind.ObjectMapper;
 
@@ -51,6 +56,7 @@ public class SecurityConfig {
     @Bean
     public SecurityFilterChain defaultSecurityFilterChain(final HttpSecurity http)
         throws Exception {
+        http.cors(cors -> cors.configurationSource(corsConfigurationSource()));
         http.csrf().disable();
         http.headers().frameOptions().sameOrigin();
         http.authorizeHttpRequests((httpRequests) -> httpRequests
@@ -74,6 +80,20 @@ public class SecurityConfig {
             .logoutSuccessHandler(new CustomLogoutSuccessHandler())
         );
         return http.build();
+    }
+
+    public CorsConfigurationSource corsConfigurationSource() {
+        CorsConfiguration configuration = new CorsConfiguration();
+
+        configuration.setAllowedOrigins(List.of("*"));
+        configuration.setAllowedHeaders(List.of("*"));
+        configuration.setExposedHeaders(List.of("*"));
+        configuration.setAllowedMethods(List.of("HEAD", "GET", "POST", "PUT"));
+        configuration.setAllowCredentials(true);
+
+        UrlBasedCorsConfigurationSource source = new UrlBasedCorsConfigurationSource();
+        source.registerCorsConfiguration("/**", configuration);
+        return source;
     }
 
     @Bean
@@ -131,17 +151,13 @@ public class SecurityConfig {
         final AbstractRememberMeServices rememberMeServices = getRememberMeServices();
         rememberMeServices.setParameter("remember");
         rememberMeServices.setCookieName("remember");
-        rememberMeServices.setAlwaysRemember(true);
+        rememberMeServices.setAlwaysRemember(false);
         rememberMeServices.setUseSecureCookie(true);
         rememberMeServices.setTokenValiditySeconds(Math.toIntExact(validityInSeconds));
         return rememberMeServices;
     }
 
     private AbstractRememberMeServices getRememberMeServices() {
-        // return new TokenBasedRememberMeServices(
-        //     rememberMeKey,
-        //     userDetailsService
-        // );
         return new PersistentTokenBasedRememberMeServices(
             rememberMeKey,
             userDetailsService,
