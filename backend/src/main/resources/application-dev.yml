@@ -47,3 +47,6 @@ security:
   authentication:
     remember-me-key: ${remember-me-key}
     validity-seconds: 2592000  # 30일
+
+  frontend:
+    origin: "http://localhost:5554"
