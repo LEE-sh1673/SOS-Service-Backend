@@ -20,5 +20,5 @@ security:
     remember-me-key: test-key
     validity-seconds: 2592000  # 30일
 
-    frontend:
-      origin: "*"
+  frontend:
+    origin: "http://localhost:5554"
