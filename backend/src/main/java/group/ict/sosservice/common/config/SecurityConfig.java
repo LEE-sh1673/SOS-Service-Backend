@@ -1,5 +1,6 @@
 package group.ict.sosservice.common.config;
 
+import java.util.Collections;
 import java.util.List;
 
 import org.springframework.beans.factory.annotation.Value;
@@ -88,6 +89,7 @@ public class SecurityConfig {
 
         configuration.setAllowedHeaders(List.of("*"));
         configuration.setAllowedMethods(List.of("*"));
+        configuration.setExposedHeaders(Collections.singletonList("x-auth-token"));
         configuration.setAllowedOriginPatterns(List.of("*"));
         configuration.setAllowCredentials(true);
 

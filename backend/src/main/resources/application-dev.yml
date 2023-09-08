@@ -4,6 +4,8 @@ server:
     session:
       cookie:
         max-age: 172800
+        same-site: none
+        secure: true
       timeout: 86400
 
 spring:
