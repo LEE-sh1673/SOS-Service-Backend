@@ -1,5 +1,6 @@
 package group.ict.sosservice.common.config;
 
+import java.net.MalformedURLException;
 import java.util.Collections;
 import java.util.List;
 
@@ -23,6 +24,8 @@ import org.springframework.security.web.authentication.rememberme.PersistentToke
 import org.springframework.security.web.authentication.rememberme.PersistentTokenRepository;
 import org.springframework.security.web.authentication.rememberme.RememberMeAuthenticationFilter;
 import org.springframework.security.web.context.HttpSessionSecurityContextRepository;
+import org.springframework.session.web.http.CookieSerializer;
+import org.springframework.session.web.http.DefaultCookieSerializer;
 import org.springframework.web.cors.CorsConfiguration;
 import org.springframework.web.cors.CorsConfigurationSource;
 import org.springframework.web.cors.UrlBasedCorsConfigurationSource;
@@ -84,12 +87,20 @@ public class SecurityConfig {
     }
 
     @Bean
+    public CookieSerializer cookieSerializer() {
+        DefaultCookieSerializer serializer = new DefaultCookieSerializer();
+        serializer.setCookieName("SESSION");
+        serializer.setSameSite("");
+        serializer.setUseSecureCookie(true);
+        return serializer;
+    }
+
+    @Bean
     public CorsConfigurationSource corsConfigurationSource() {
         final CorsConfiguration configuration = new CorsConfiguration();
 
         configuration.setAllowedHeaders(List.of("*"));
         configuration.setAllowedMethods(List.of("*"));
-        configuration.setExposedHeaders(Collections.singletonList("x-auth-token"));
         configuration.setAllowedOriginPatterns(List.of("*"));
         configuration.setAllowCredentials(true);
 
