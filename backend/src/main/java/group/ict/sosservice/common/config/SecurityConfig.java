@@ -53,13 +53,10 @@ public class SecurityConfig {
     @Value("${security.authentication.remember-me-key}")
     private String rememberMeKey;
 
-    @Value("${security.frontend.origin}")
-    private String frontEndOrigin;
-
     @Bean
     public SecurityFilterChain defaultSecurityFilterChain(final HttpSecurity http)
         throws Exception {
-        http.cors(cors -> cors.configurationSource(corsConfigurationSource()));
+        http.cors();
         http.csrf().disable();
         http.headers().frameOptions().sameOrigin();
         http.authorizeHttpRequests((httpRequests) -> httpRequests
@@ -85,16 +82,16 @@ public class SecurityConfig {
         return http.build();
     }
 
+    @Bean
     public CorsConfigurationSource corsConfigurationSource() {
-        CorsConfiguration configuration = new CorsConfiguration();
+        final CorsConfiguration configuration = new CorsConfiguration();
 
-        configuration.setAllowedOrigins(List.of(frontEndOrigin));
         configuration.setAllowedHeaders(List.of("*"));
-        configuration.setExposedHeaders(List.of("*"));
-        configuration.setAllowedMethods(List.of("HEAD", "GET", "POST", "PUT"));
+        configuration.setAllowedMethods(List.of("*"));
+        configuration.setAllowedOriginPatterns(List.of("*"));
         configuration.setAllowCredentials(true);
 
-        UrlBasedCorsConfigurationSource source = new UrlBasedCorsConfigurationSource();
+        final UrlBasedCorsConfigurationSource source = new UrlBasedCorsConfigurationSource();
         source.registerCorsConfiguration("/**", configuration);
         return source;
     }
