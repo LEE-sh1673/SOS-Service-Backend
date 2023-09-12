@@ -15,10 +15,6 @@ public class ApiUtils {
         return new ApiResult<>(true, response, null);
     }
 
-    public static ApiResult<?> error(final ErrorType errorType) {
-        return new ApiResult<>(false, null, new ApiError(errorType));
-    }
-
     public static ApiResult<?> error(final String message) {
         return new ApiResult<>(false, null, new ApiError(message));
     }

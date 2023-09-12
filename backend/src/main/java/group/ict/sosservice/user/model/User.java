@@ -7,9 +7,12 @@ import javax.persistence.Embedded;
 import javax.persistence.Entity;
 import javax.persistence.EnumType;
 import javax.persistence.Enumerated;
+import javax.persistence.FetchType;
 import javax.persistence.GeneratedValue;
 import javax.persistence.GenerationType;
 import javax.persistence.Id;
+import javax.persistence.JoinColumn;
+import javax.persistence.OneToOne;
 
 import group.ict.sosservice.common.model.BaseTimeEntity;
 import lombok.AccessLevel;
@@ -45,6 +48,10 @@ public class User extends BaseTimeEntity {
     @Column(nullable = false)
     private Role role;
 
+    @OneToOne(fetch = FetchType.LAZY)
+    @JoinColumn(name = "child_id")
+    private User child;
+
     @Builder
     public User(final String name, final String email, final String password,
         final LocalDate birth, final String phoneNumber,
@@ -68,6 +75,10 @@ public class User extends BaseTimeEntity {
 
     public void updateRole(final Role role) {
         this.role = role;
+    }
+
+    public void updateChild(final User child) {
+        this.child = child;
     }
 
     public UserEditor.UserEditorBuilder toEditor() {

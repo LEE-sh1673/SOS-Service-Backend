@@ -11,8 +11,12 @@ create table user (
     role varchar(255) not null,
     created_at datetime(6) not null,
     modified_at datetime(6) not null,
+    child_id BIGINT NULL,
     primary key (id)
 );
+
+ALTER TABLE user
+    ADD CONSTRAINT FK_USER_ON_CHILD FOREIGN KEY (child_id) REFERENCES user (id);
 
 create table persistent_logins (
     username varchar(64) not null,
