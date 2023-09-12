@@ -5,3 +5,6 @@ Content-Type: application/json
 {
   "email": "lsh1234@gmail.com"
 }
+
+### 보호 대상자 조회
+GET http://localhost:8082/api/v1/child

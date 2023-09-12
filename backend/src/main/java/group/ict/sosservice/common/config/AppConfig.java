@@ -7,6 +7,7 @@ import org.springframework.context.annotation.Configuration;
 
 import group.ict.sosservice.user.model.Role;
 import group.ict.sosservice.user.model.User;
+import group.ict.sosservice.user.service.dto.ChildResponseDto;
 import group.ict.sosservice.user.service.dto.SignUpRequestDto;
 import group.ict.sosservice.user.service.dto.UserResponseDto;
 
@@ -29,6 +30,9 @@ public class AppConfig {
         modelMapper.createTypeMap(SignUpRequestDto.class, User.class)
             .addMapping(SignUpRequestDto::getEmail, User::updateEmail)
             .addMapping(source -> Role.USER, User::updateRole);
+
+        modelMapper.createTypeMap(User.class, ChildResponseDto.class)
+            .addMapping(source -> source.getEmail().getValue(), ChildResponseDto::setEmail);
 
         return modelMapper;
     }

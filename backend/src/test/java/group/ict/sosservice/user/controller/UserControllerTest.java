@@ -2,6 +2,7 @@ package group.ict.sosservice.user.controller;
 
 import static org.hamcrest.Matchers.is;
 import static org.springframework.http.MediaType.APPLICATION_JSON;
+import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.get;
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.post;
 import static org.springframework.test.web.servlet.result.MockMvcResultHandlers.print;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.jsonPath;
@@ -114,5 +115,18 @@ class UserControllerTest {
             .andExpect(jsonPath("$.success", is(false)))
             .andExpect(jsonPath("$.error").exists())
             .andExpect(jsonPath("$.error.message", is(ErrorType.NOT_FOUND_MEMBER.getMessage())));
+    }
+
+    @Test
+    @WithMockTestUser
+    @DisplayName("보호 대상자를 조회할 수 있다.")
+    void get_child() throws Exception {
+        final ResultActions result = mockMvc.perform(
+            get("/api/v1/child")
+                .accept(APPLICATION_JSON)
+        );
+
+        result.andDo(print())
+            .andExpect(status().isOk());
     }
 }
