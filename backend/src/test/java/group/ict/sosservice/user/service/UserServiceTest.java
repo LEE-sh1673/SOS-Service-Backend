@@ -84,7 +84,7 @@ class UserServiceTest {
     @DisplayName("보호 대상자가 존재하지 않으면 빈값을 반환한다.")
     void givenNoChildUser_thenReturnEmpty() {
         final ChildResponse actual = userService.findChild(parent.getId());
-        final ChildResponse empty = ChildResponse.empty();
+        final ChildResponse empty = ChildResponse.builder().build();
 
         assertEquals(empty.getId(), actual.getId());
         assertEquals(empty.getName(), actual.getName());

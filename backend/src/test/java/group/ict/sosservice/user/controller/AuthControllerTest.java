@@ -17,7 +17,6 @@ import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.autoconfigure.web.servlet.AutoConfigureMockMvc;
-import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.test.web.servlet.MockMvc;
 import org.springframework.test.web.servlet.MvcResult;
 import org.springframework.test.web.servlet.ResultActions;
@@ -28,7 +27,6 @@ import group.ict.sosservice.common.annotations.AcceptanceTest;
 import group.ict.sosservice.common.annotations.WithMockTestUser;
 import group.ict.sosservice.user.controller.dto.SignUpRequest;
 import group.ict.sosservice.user.controller.dto.UserEditRequest;
-import group.ict.sosservice.user.model.UserRepository;
 import lombok.Builder;
 import lombok.Getter;
 
@@ -41,12 +39,6 @@ class AuthControllerTest {
 
     @Autowired
     private ObjectMapper objectMapper;
-
-    @Autowired
-    private UserRepository userRepository;
-
-    @Autowired
-    private PasswordEncoder encoder;
 
     @Test
     @DisplayName("회원가입 할 수 있다.")

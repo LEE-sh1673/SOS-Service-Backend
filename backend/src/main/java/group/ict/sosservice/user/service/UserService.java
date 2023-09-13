@@ -10,6 +10,7 @@ import group.ict.sosservice.user.model.Email;
 import group.ict.sosservice.user.model.User;
 import group.ict.sosservice.user.model.UserRepository;
 import group.ict.sosservice.user.service.dto.ChildResponse;
+import group.ict.sosservice.user.utils.EmptyUser;
 import lombok.RequiredArgsConstructor;
 
 @Service
@@ -32,12 +33,12 @@ public class UserService {
 
     @Transactional(readOnly = true)
     public ChildResponse findChild(final Long parentId) {
-        final User child = findById(parentId).getChild();
+        return modelMapper.map(findChildById(parentId), ChildResponse.class);
+    }
 
-        if (child == null) {
-            return ChildResponse.empty();
-        }
-        return modelMapper.map(child, ChildResponse.class);
+    private User findChildById(final Long userId) {
+        return userRepository.findChildById(userId)
+            .orElseGet(EmptyUser::new);
     }
 
     private User findById(final Long userId) {

@@ -1,13 +1,10 @@
 package group.ict.sosservice.common.config;
 
-import java.net.MalformedURLException;
-import java.util.Collections;
 import java.util.List;
 
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
-import org.springframework.context.annotation.Profile;
 import org.springframework.http.HttpMethod;
 import org.springframework.security.authentication.AuthenticationManager;
 import org.springframework.security.authentication.ProviderManager;
@@ -25,8 +22,6 @@ import org.springframework.security.web.authentication.rememberme.PersistentToke
 import org.springframework.security.web.authentication.rememberme.PersistentTokenRepository;
 import org.springframework.security.web.authentication.rememberme.RememberMeAuthenticationFilter;
 import org.springframework.security.web.context.HttpSessionSecurityContextRepository;
-import org.springframework.session.web.http.CookieSerializer;
-import org.springframework.session.web.http.DefaultCookieSerializer;
 import org.springframework.web.cors.CorsConfiguration;
 import org.springframework.web.cors.CorsConfigurationSource;
 import org.springframework.web.cors.UrlBasedCorsConfigurationSource;
@@ -85,16 +80,6 @@ public class SecurityConfig {
             .logoutSuccessHandler(new CustomLogoutSuccessHandler())
         );
         return http.build();
-    }
-
-    @Bean
-    @Profile("dev")
-    public CookieSerializer cookieSerializer() {
-        DefaultCookieSerializer serializer = new DefaultCookieSerializer();
-        serializer.setCookieName("SESSION");
-        serializer.setSameSite("");
-        serializer.setUseSecureCookie(true);
-        return serializer;
     }
 
     @Bean

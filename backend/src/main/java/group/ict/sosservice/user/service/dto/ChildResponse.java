@@ -34,8 +34,4 @@ public class ChildResponse {
     public void setEmail(final String email) {
         this.email = email;
     }
-
-    public static ChildResponse empty() {
-        return ChildResponse.builder().build();
-    }
 }
