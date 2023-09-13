@@ -20,8 +20,8 @@ import group.ict.sosservice.user.model.Email;
 import group.ict.sosservice.user.model.Role;
 import group.ict.sosservice.user.model.User;
 import group.ict.sosservice.user.model.UserRepository;
-import group.ict.sosservice.user.service.dto.SignUpRequestDto;
-import group.ict.sosservice.user.service.dto.UserEditRequestDto;
+import group.ict.sosservice.user.service.dto.SignUpResponse;
+import group.ict.sosservice.user.service.dto.UserEditResponse;
 
 @AcceptanceTest
 class AuthServiceTest {
@@ -38,7 +38,7 @@ class AuthServiceTest {
     @Test
     @DisplayName("회원가입한다.")
     void signup() {
-        final SignUpRequestDto request = SignUpRequestDto.builder()
+        final SignUpResponse request = SignUpResponse.builder()
             .name("name-1")
             .password("password-1")
             .email("lsh@gmail.com")
@@ -63,7 +63,7 @@ class AuthServiceTest {
     @Test
     @DisplayName("이메일 형식이 올바르지 않으면 오류가 발생한다.")
     void givenInvalidEmail_thenThrowException() {
-        final SignUpRequestDto request = SignUpRequestDto.builder()
+        final SignUpResponse request = SignUpResponse.builder()
             .name("name-1")
             .password("password-1")
             .email("@gmail.com")
@@ -84,7 +84,7 @@ class AuthServiceTest {
             .role(Role.USER)
             .build());
 
-        final SignUpRequestDto request = SignUpRequestDto.builder()
+        final SignUpResponse request = SignUpResponse.builder()
             .name("name-1")
             .password("password-1")
             .email("lsh@gmail.com")
@@ -109,7 +109,7 @@ class AuthServiceTest {
             .build()
         );
 
-        final UserEditRequestDto requestDto = UserEditRequestDto.builder()
+        final UserEditResponse requestDto = UserEditResponse.builder()
             .name("modified-name")
             .password("modified-password")
             .build();

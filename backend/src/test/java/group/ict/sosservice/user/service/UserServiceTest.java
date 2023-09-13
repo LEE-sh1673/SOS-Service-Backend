@@ -14,7 +14,7 @@ import group.ict.sosservice.common.annotations.WithMockTestUser;
 import group.ict.sosservice.user.model.Role;
 import group.ict.sosservice.user.model.User;
 import group.ict.sosservice.user.model.UserRepository;
-import group.ict.sosservice.user.service.dto.ChildResponseDto;
+import group.ict.sosservice.user.service.dto.ChildResponse;
 
 @AcceptanceTest
 @Transactional
@@ -70,7 +70,7 @@ class UserServiceTest {
     void get_child() {
         userService.registerChild(parent.getId(), child.getEmail().getValue());
 
-        final ChildResponseDto actual = userService.findChild(parent.getId());
+        final ChildResponse actual = userService.findChild(parent.getId());
         assertEquals(child.getId(), actual.getId());
         assertEquals(child.getName(), actual.getName());
         assertEquals(child.getEmail().getValue(), actual.getEmail());
@@ -83,8 +83,8 @@ class UserServiceTest {
     @WithMockTestUser
     @DisplayName("보호 대상자가 존재하지 않으면 빈값을 반환한다.")
     void givenNoChildUser_thenReturnEmpty() {
-        final ChildResponseDto actual = userService.findChild(parent.getId());
-        final ChildResponseDto empty = ChildResponseDto.empty();
+        final ChildResponse actual = userService.findChild(parent.getId());
+        final ChildResponse empty = ChildResponse.empty();
 
         assertEquals(empty.getId(), actual.getId());
         assertEquals(empty.getName(), actual.getName());

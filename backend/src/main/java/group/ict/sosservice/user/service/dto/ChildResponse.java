@@ -1,6 +1,10 @@
 package group.ict.sosservice.user.service.dto;
 
+import static com.fasterxml.jackson.annotation.JsonInclude.Include;
+
 import java.time.LocalDate;
+
+import com.fasterxml.jackson.annotation.JsonInclude;
 
 import lombok.AccessLevel;
 import lombok.AllArgsConstructor;
@@ -12,11 +16,14 @@ import lombok.NoArgsConstructor;
 @Builder
 @NoArgsConstructor(access = AccessLevel.PROTECTED)
 @AllArgsConstructor
-public class UserResponseDto {
+@JsonInclude(Include.NON_NULL)
+public class ChildResponse {
 
-    private String email;
+    private Long id;
 
     private String name;
+
+    private String email;
 
     private LocalDate birth;
 
@@ -26,5 +33,9 @@ public class UserResponseDto {
 
     public void setEmail(final String email) {
         this.email = email;
+    }
+
+    public static ChildResponse empty() {
+        return ChildResponse.builder().build();
     }
 }

@@ -19,8 +19,8 @@ import group.ict.sosservice.common.utils.ApiUtils;
 import group.ict.sosservice.user.controller.dto.SignUpRequest;
 import group.ict.sosservice.user.controller.dto.UserEditRequest;
 import group.ict.sosservice.user.service.AuthService;
-import group.ict.sosservice.user.service.dto.SignUpRequestDto;
-import group.ict.sosservice.user.service.dto.UserEditRequestDto;
+import group.ict.sosservice.user.service.dto.SignUpResponse;
+import group.ict.sosservice.user.service.dto.UserEditResponse;
 import lombok.RequiredArgsConstructor;
 
 @RestController
@@ -34,7 +34,7 @@ public class AuthController {
 
     @PostMapping("/signup")
     public ResponseEntity<?> signup(@RequestBody @Valid final SignUpRequest request) {
-        authService.signup(modelMapper.map(request, SignUpRequestDto.class));
+        authService.signup(modelMapper.map(request, SignUpResponse.class));
         return ResponseEntity.ok().build();
     }
 
@@ -50,7 +50,7 @@ public class AuthController {
     ) {
         authService.edit(
             userPrincipal.getUserId(),
-            modelMapper.map(request, UserEditRequestDto.class)
+            modelMapper.map(request, UserEditResponse.class)
         );
         return ResponseEntity.ok().build();
     }

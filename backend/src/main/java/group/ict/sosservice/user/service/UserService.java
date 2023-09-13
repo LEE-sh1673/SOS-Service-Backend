@@ -9,7 +9,7 @@ import group.ict.sosservice.user.exception.InvalidMemberException;
 import group.ict.sosservice.user.model.Email;
 import group.ict.sosservice.user.model.User;
 import group.ict.sosservice.user.model.UserRepository;
-import group.ict.sosservice.user.service.dto.ChildResponseDto;
+import group.ict.sosservice.user.service.dto.ChildResponse;
 import lombok.RequiredArgsConstructor;
 
 @Service
@@ -31,13 +31,13 @@ public class UserService {
     }
 
     @Transactional(readOnly = true)
-    public ChildResponseDto findChild(final Long parentId) {
+    public ChildResponse findChild(final Long parentId) {
         final User child = findById(parentId).getChild();
 
         if (child == null) {
-            return ChildResponseDto.empty();
+            return ChildResponse.empty();
         }
-        return modelMapper.map(child, ChildResponseDto.class);
+        return modelMapper.map(child, ChildResponse.class);
     }
 
     private User findById(final Long userId) {

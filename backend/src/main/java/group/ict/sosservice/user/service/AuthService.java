@@ -11,9 +11,9 @@ import group.ict.sosservice.user.model.Email;
 import group.ict.sosservice.user.model.User;
 import group.ict.sosservice.user.model.UserEditor;
 import group.ict.sosservice.user.model.UserRepository;
-import group.ict.sosservice.user.service.dto.SignUpRequestDto;
-import group.ict.sosservice.user.service.dto.UserEditRequestDto;
-import group.ict.sosservice.user.service.dto.UserResponseDto;
+import group.ict.sosservice.user.service.dto.SignUpResponse;
+import group.ict.sosservice.user.service.dto.UserEditResponse;
+import group.ict.sosservice.user.service.dto.UserResponse;
 import lombok.RequiredArgsConstructor;
 
 @Service
@@ -27,12 +27,12 @@ public class AuthService {
     private final ModelMapper modelMapper;
 
     @Transactional
-    public void signup(final SignUpRequestDto request) {
+    public void signup(final SignUpResponse request) {
         validateCredentials(request);
         userRepository.save(mapToUser(request));
     }
 
-    private void validateCredentials(final SignUpRequestDto request) {
+    private void validateCredentials(final SignUpResponse request) {
         final Email email = Email.of(request.getEmail());
 
         if (userRepository.existsUserByEmail(email)) {
@@ -40,7 +40,7 @@ public class AuthService {
         }
     }
 
-    private User mapToUser(final SignUpRequestDto request) {
+    private User mapToUser(final SignUpResponse request) {
         final User user = modelMapper.map(request, User.class);
         user.updatePassword(encodePassword(request.getPassword()));
         return user;
@@ -51,12 +51,12 @@ public class AuthService {
     }
 
     @Transactional(readOnly = true)
-    public UserResponseDto findOne(final Long userId) {
-        return modelMapper.map(findById(userId), UserResponseDto.class);
+    public UserResponse findOne(final Long userId) {
+        return modelMapper.map(findById(userId), UserResponse.class);
     }
 
     @Transactional
-    public void edit(final Long userId, final UserEditRequestDto request) {
+    public void edit(final Long userId, final UserEditResponse request) {
         final User user = findById(userId);
         user.edit(getUserEditor(user, request));
     }
@@ -66,7 +66,7 @@ public class AuthService {
             .orElseThrow(() -> new InvalidMemberException(ErrorType.NOT_FOUND_MEMBER));
     }
 
-    private UserEditor getUserEditor(final User user, final UserEditRequestDto request) {
+    private UserEditor getUserEditor(final User user, final UserEditResponse request) {
         return user.toEditor()
             .name(request.getName())
             .password(encodePassword(request.getPassword()))

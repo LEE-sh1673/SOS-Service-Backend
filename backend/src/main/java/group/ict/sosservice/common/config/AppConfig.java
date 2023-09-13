@@ -7,9 +7,9 @@ import org.springframework.context.annotation.Configuration;
 
 import group.ict.sosservice.user.model.Role;
 import group.ict.sosservice.user.model.User;
-import group.ict.sosservice.user.service.dto.ChildResponseDto;
-import group.ict.sosservice.user.service.dto.SignUpRequestDto;
-import group.ict.sosservice.user.service.dto.UserResponseDto;
+import group.ict.sosservice.user.service.dto.ChildResponse;
+import group.ict.sosservice.user.service.dto.SignUpResponse;
+import group.ict.sosservice.user.service.dto.UserResponse;
 
 @Configuration
 public class AppConfig {
@@ -23,16 +23,16 @@ public class AppConfig {
             .setFieldAccessLevel(org.modelmapper.config.Configuration.AccessLevel.PRIVATE)
             .setFieldMatchingEnabled(true);
 
-        modelMapper.createTypeMap(User.class, UserResponseDto.class)
-            .addMapping(source -> source.getEmail().getValue(), UserResponseDto::setEmail);
+        modelMapper.createTypeMap(User.class, UserResponse.class)
+            .addMapping(source -> source.getEmail().getValue(), UserResponse::setEmail);
 
         //TODO: change later
-        modelMapper.createTypeMap(SignUpRequestDto.class, User.class)
-            .addMapping(SignUpRequestDto::getEmail, User::updateEmail)
+        modelMapper.createTypeMap(SignUpResponse.class, User.class)
+            .addMapping(SignUpResponse::getEmail, User::updateEmail)
             .addMapping(source -> Role.USER, User::updateRole);
 
-        modelMapper.createTypeMap(User.class, ChildResponseDto.class)
-            .addMapping(source -> source.getEmail().getValue(), ChildResponseDto::setEmail);
+        modelMapper.createTypeMap(User.class, ChildResponse.class)
+            .addMapping(source -> source.getEmail().getValue(), ChildResponse::setEmail);
 
         return modelMapper;
     }
