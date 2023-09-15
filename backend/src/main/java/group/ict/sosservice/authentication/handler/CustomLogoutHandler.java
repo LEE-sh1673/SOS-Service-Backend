@@ -23,7 +23,7 @@ public class CustomLogoutHandler implements LogoutHandler {
     ) {
         final HttpSession session = request.getSession();
 
-        if (session != null) {
+        if (session != null && authentication != null) {
             tokenRepository.removeUserTokens(authentication.getName());
             session.invalidate();
         }

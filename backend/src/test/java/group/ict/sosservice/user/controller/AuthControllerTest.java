@@ -27,6 +27,7 @@ import group.ict.sosservice.common.annotations.AcceptanceTest;
 import group.ict.sosservice.common.annotations.WithMockTestUser;
 import group.ict.sosservice.user.controller.dto.SignUpRequest;
 import group.ict.sosservice.user.controller.dto.UserEditRequest;
+import group.ict.sosservice.user.controller.dto.UserViewRequest;
 import lombok.Builder;
 import lombok.Getter;
 
@@ -243,8 +244,15 @@ class AuthControllerTest {
     @WithMockTestUser
     @DisplayName("회원정보를 조회할 수 있다.")
     void me() throws Exception {
+        final UserViewRequest viewRequest = UserViewRequest.builder()
+            .email("test-user@gmail.com")
+            .build();
+
         final ResultActions result = mockMvc.perform(
             get("/api/v1/auth/me")
+                .contentType(APPLICATION_JSON)
+                .accept(APPLICATION_JSON)
+                .content(objectMapper.writeValueAsString(viewRequest))
         );
 
         result.andDo(print())

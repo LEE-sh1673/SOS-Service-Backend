@@ -28,12 +28,12 @@ public class AuthService {
 
     @Transactional
     public void signup(final SignUpResponse request) {
-        validateCredentials(request);
+        validateEmail(request.getEmail());
         userRepository.save(mapToUser(request));
     }
 
-    private void validateCredentials(final SignUpResponse request) {
-        final Email email = Email.of(request.getEmail());
+    private void validateEmail(final String requestEmail) {
+        final Email email = Email.of(requestEmail);
 
         if (userRepository.existsUserByEmail(email)) {
             throw new InvalidMemberException(ErrorType.DULICATED_MEMBER_EMAIL);
@@ -53,6 +53,14 @@ public class AuthService {
     @Transactional(readOnly = true)
     public UserResponse findOne(final Long userId) {
         return modelMapper.map(findById(userId), UserResponse.class);
+    }
+
+    @Transactional(readOnly = true)
+    public UserResponse findUser(final String email) {
+        final User user = userRepository.findByEmail(Email.of(email))
+            .orElseThrow(() -> new InvalidMemberException(ErrorType.NOT_FOUND_MEMBER));
+
+        return modelMapper.map(user, UserResponse.class);
     }
 
     @Transactional

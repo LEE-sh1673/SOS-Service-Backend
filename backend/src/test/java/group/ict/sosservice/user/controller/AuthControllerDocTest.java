@@ -29,6 +29,7 @@ import org.springframework.boot.test.autoconfigure.restdocs.AutoConfigureRestDoc
 import org.springframework.boot.test.autoconfigure.web.servlet.AutoConfigureMockMvc;
 import org.springframework.test.web.servlet.MockMvc;
 import org.springframework.test.web.servlet.ResultActions;
+import org.springframework.test.web.servlet.request.MockMvcRequestBuilders;
 
 import com.fasterxml.jackson.databind.ObjectMapper;
 
@@ -36,6 +37,7 @@ import group.ict.sosservice.common.annotations.AcceptanceTest;
 import group.ict.sosservice.common.annotations.WithMockTestUser;
 import group.ict.sosservice.user.controller.dto.SignUpRequest;
 import group.ict.sosservice.user.controller.dto.UserEditRequest;
+import group.ict.sosservice.user.controller.dto.UserViewRequest;
 import lombok.Builder;
 import lombok.Getter;
 
@@ -218,9 +220,15 @@ public class AuthControllerDocTest {
     @WithMockTestUser
     @DisplayName("회원 정보 조회")
     void me() throws Exception {
+        final UserViewRequest viewRequest = UserViewRequest.builder()
+            .email("test-user@gmail.com")
+            .build();
+
         final ResultActions result = mockMvc.perform(
             get("/api/v1/auth/me")
+                .contentType(APPLICATION_JSON)
                 .accept(APPLICATION_JSON)
+                .content(objectMapper.writeValueAsString(viewRequest))
         );
 
         result.andDo(print())

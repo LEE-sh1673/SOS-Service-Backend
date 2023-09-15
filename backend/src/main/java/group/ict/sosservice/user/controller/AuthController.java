@@ -18,6 +18,7 @@ import group.ict.sosservice.authentication.service.dto.UserPrincipal;
 import group.ict.sosservice.common.utils.ApiUtils;
 import group.ict.sosservice.user.controller.dto.SignUpRequest;
 import group.ict.sosservice.user.controller.dto.UserEditRequest;
+import group.ict.sosservice.user.controller.dto.UserViewRequest;
 import group.ict.sosservice.user.service.AuthService;
 import group.ict.sosservice.user.service.dto.SignUpResponse;
 import group.ict.sosservice.user.service.dto.UserEditResponse;
@@ -39,8 +40,8 @@ public class AuthController {
     }
 
     @GetMapping("/me")
-    public ApiUtils.ApiResult<?> me(@AuthenticationPrincipal final UserPrincipal userPrincipal) {
-        return success(authService.findOne(userPrincipal.getUserId()));
+    public ApiUtils.ApiResult<?> me(@RequestBody @Valid final UserViewRequest request) {
+        return success(authService.findUser(request.getEmail()));
     }
 
     @PutMapping("/me")

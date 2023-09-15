@@ -64,6 +64,11 @@ public class SecurityConfig {
             .antMatchers("/h2-console/**").permitAll()
             .antMatchers(HttpMethod.POST, "/api/v1/auth/signup").permitAll()
             .antMatchers(HttpMethod.POST, "/api/v1/auth/login").permitAll()
+            .antMatchers(HttpMethod.POST, "/api/v1/auth/logout").permitAll()
+            .antMatchers(HttpMethod.GET, "/api/v1/auth/me").permitAll()
+            .antMatchers(HttpMethod.PUT, "/api/v1/auth/me").permitAll()
+            .antMatchers(HttpMethod.POST, "/api/v1/child").permitAll()
+            .antMatchers(HttpMethod.GET, "/api/v1/child").permitAll()
             .anyRequest().authenticated()
         );
         http.addFilterBefore(
