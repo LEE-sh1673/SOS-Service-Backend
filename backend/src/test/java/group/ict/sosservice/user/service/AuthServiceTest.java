@@ -110,11 +110,12 @@ class AuthServiceTest {
         );
 
         final UserEditRequestDto requestDto = UserEditRequestDto.builder()
+            .email("lsh@gmail.com")
             .name("modified-name")
             .password("modified-password")
             .build();
 
-        authService.edit(user.getId(), requestDto);
+        authService.edit(requestDto);
 
         final User modifiedUser = userRepository.findAll().get(0);
         assertNotEquals(user.getName(), modifiedUser.getName());

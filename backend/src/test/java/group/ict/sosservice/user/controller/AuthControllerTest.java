@@ -267,6 +267,7 @@ class AuthControllerTest {
     @DisplayName("회원정보를 수정할 수 있다.")
     void edit() throws Exception {
         final UserEditRequest editRequest = UserEditRequest.builder()
+            .email("test-user@gmail.com")
             .name("modifiedName")
             .password("password-1234")
             .birth(LocalDate.now())
@@ -290,6 +291,7 @@ class AuthControllerTest {
     @DisplayName("회원정보 수정 시 이름/비밀번호는 필수이다.")
     void givenInvalidEditRequest_thenErrorResponse() throws Exception {
         final UserEditRequest editRequest = UserEditRequest.builder()
+            .email("test-user@gmail.com")
             .name(null)
             .password(null)
             .build();

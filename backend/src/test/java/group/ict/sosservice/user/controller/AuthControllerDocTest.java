@@ -253,6 +253,7 @@ public class AuthControllerDocTest {
     @DisplayName("회원 정보 수정")
     void edit() throws Exception {
         final UserEditRequest editRequest = UserEditRequest.builder()
+            .email("test-user@gmail.com")
             .name("modifiedName")
             .password("password-1234")
             .birth(LocalDate.now())
@@ -273,6 +274,9 @@ public class AuthControllerDocTest {
             .andDo(document("user-edit",
                 preprocessRequest(prettyPrint()),
                 requestFields(
+                    fieldWithPath("email").description("이메일 주소")
+                        .attributes(key("constraint").value(
+                            "형식에 맞춰 작성 (^[a-zA-Z0-9_!#$%&'*+/=?`{|}~^.-]+@[a-zA-Z0-9.-]+.[a-zA-Z]{2,6}$)")),
                     fieldWithPath("name").description("회원 이름"),
                     fieldWithPath("password").description("비밀번호"),
                     fieldWithPath("birth")
@@ -291,6 +295,7 @@ public class AuthControllerDocTest {
     @DisplayName("회원 정보 수정 시 이름/비밀번호는 필수이다.")
     void givenInvalidEditRequest_thenErrorResponse() throws Exception {
         final UserEditRequest editRequest = UserEditRequest.builder()
+            .email("test-user@gmail.com")
             .name(null)
             .password(null)
             .birth(LocalDate.now())
@@ -312,6 +317,9 @@ public class AuthControllerDocTest {
                 preprocessRequest(prettyPrint()),
                 preprocessResponse(prettyPrint()),
                 requestFields(
+                    fieldWithPath("email").description("이메일 주소")
+                        .attributes(key("constraint").value(
+                            "형식에 맞춰 작성 (^[a-zA-Z0-9_!#$%&'*+/=?`{|}~^.-]+@[a-zA-Z0-9.-]+.[a-zA-Z]{2,6}$)")),
                     fieldWithPath("name").description("회원 이름"),
                     fieldWithPath("password").description("비밀번호"),
                     fieldWithPath("birth")

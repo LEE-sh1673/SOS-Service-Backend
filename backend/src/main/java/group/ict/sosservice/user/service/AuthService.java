@@ -64,8 +64,10 @@ public class AuthService {
     }
 
     @Transactional
-    public void edit(final Long userId, final UserEditRequestDto request) {
-        final User user = findById(userId);
+    public void edit(final UserEditRequestDto request) {
+        final User user = userRepository.findByEmail(Email.of(request.getEmail()))
+            .orElseThrow(() -> new InvalidMemberException(ErrorType.NOT_FOUND_MEMBER));
+
         user.edit(getUserEditor(user, request));
     }
 

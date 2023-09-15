@@ -46,11 +46,9 @@ public class AuthController {
 
     @PutMapping("/me")
     public ResponseEntity<?> edit(
-        @AuthenticationPrincipal final UserPrincipal userPrincipal,
         @RequestBody @Valid final UserEditRequest request
     ) {
         authService.edit(
-            userPrincipal.getUserId(),
             modelMapper.map(request, UserEditRequestDto.class)
         );
         return ResponseEntity.ok().build();
