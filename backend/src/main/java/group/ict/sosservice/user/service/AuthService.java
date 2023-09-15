@@ -12,7 +12,7 @@ import group.ict.sosservice.user.model.User;
 import group.ict.sosservice.user.model.UserEditor;
 import group.ict.sosservice.user.model.UserRepository;
 import group.ict.sosservice.user.service.dto.SignUpResponse;
-import group.ict.sosservice.user.service.dto.UserEditResponse;
+import group.ict.sosservice.user.service.dto.UserEditRequestDto;
 import group.ict.sosservice.user.service.dto.UserResponse;
 import lombok.RequiredArgsConstructor;
 
@@ -64,7 +64,7 @@ public class AuthService {
     }
 
     @Transactional
-    public void edit(final Long userId, final UserEditResponse request) {
+    public void edit(final Long userId, final UserEditRequestDto request) {
         final User user = findById(userId);
         user.edit(getUserEditor(user, request));
     }
@@ -74,7 +74,7 @@ public class AuthService {
             .orElseThrow(() -> new InvalidMemberException(ErrorType.NOT_FOUND_MEMBER));
     }
 
-    private UserEditor getUserEditor(final User user, final UserEditResponse request) {
+    private UserEditor getUserEditor(final User user, final UserEditRequestDto request) {
         return user.toEditor()
             .name(request.getName())
             .password(encodePassword(request.getPassword()))

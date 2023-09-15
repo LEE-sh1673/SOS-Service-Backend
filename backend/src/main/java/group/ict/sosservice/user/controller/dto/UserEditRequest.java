@@ -21,6 +21,11 @@ import lombok.NoArgsConstructor;
 @AllArgsConstructor
 public class UserEditRequest {
 
+    @NotBlank(message = "이메일은 공백일 수 없습니다.")
+    @Pattern(regexp = "^[a-zA-Z0-9_!#$%&'*+/=?`{|}~^.-]+@[a-zA-Z0-9.-]+.[a-zA-Z]{2,6}$",
+        message = "이메일 형식이 올바르지 않습니다.")
+    private String email;
+
     @NotBlank(message = "이름은 공백일 수 없습니다.")
     private String name;
 

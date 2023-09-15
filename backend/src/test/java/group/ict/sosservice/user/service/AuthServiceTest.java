@@ -21,7 +21,7 @@ import group.ict.sosservice.user.model.Role;
 import group.ict.sosservice.user.model.User;
 import group.ict.sosservice.user.model.UserRepository;
 import group.ict.sosservice.user.service.dto.SignUpResponse;
-import group.ict.sosservice.user.service.dto.UserEditResponse;
+import group.ict.sosservice.user.service.dto.UserEditRequestDto;
 
 @AcceptanceTest
 class AuthServiceTest {
@@ -109,7 +109,7 @@ class AuthServiceTest {
             .build()
         );
 
-        final UserEditResponse requestDto = UserEditResponse.builder()
+        final UserEditRequestDto requestDto = UserEditRequestDto.builder()
             .name("modified-name")
             .password("modified-password")
             .build();

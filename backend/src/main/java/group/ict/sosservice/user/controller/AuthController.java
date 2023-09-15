@@ -21,7 +21,7 @@ import group.ict.sosservice.user.controller.dto.UserEditRequest;
 import group.ict.sosservice.user.controller.dto.UserViewRequest;
 import group.ict.sosservice.user.service.AuthService;
 import group.ict.sosservice.user.service.dto.SignUpResponse;
-import group.ict.sosservice.user.service.dto.UserEditResponse;
+import group.ict.sosservice.user.service.dto.UserEditRequestDto;
 import lombok.RequiredArgsConstructor;
 
 @RestController
@@ -51,7 +51,7 @@ public class AuthController {
     ) {
         authService.edit(
             userPrincipal.getUserId(),
-            modelMapper.map(request, UserEditResponse.class)
+            modelMapper.map(request, UserEditRequestDto.class)
         );
         return ResponseEntity.ok().build();
     }
