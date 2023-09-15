@@ -21,6 +21,7 @@ import group.ict.sosservice.common.annotations.AcceptanceTest;
 import group.ict.sosservice.common.annotations.WithMockTestUser;
 import group.ict.sosservice.common.exception.ErrorType;
 import group.ict.sosservice.user.controller.dto.ChildRegisterRequest;
+import group.ict.sosservice.user.controller.dto.UserViewRequest;
 
 @AutoConfigureMockMvc
 @AcceptanceTest
@@ -125,9 +126,15 @@ class UserControllerTest {
     @WithMockTestUser
     @DisplayName("보호 대상자를 조회할 수 있다.")
     void get_child() throws Exception {
+        final UserViewRequest viewRequest = UserViewRequest.builder()
+            .email("test-user@gmail.com")
+            .build();
+
         final ResultActions result = mockMvc.perform(
             get("/api/v1/child")
+                .contentType(APPLICATION_JSON)
                 .accept(APPLICATION_JSON)
+                .content(objectMapper.writeValueAsString(viewRequest))
         );
 
         result.andDo(print())

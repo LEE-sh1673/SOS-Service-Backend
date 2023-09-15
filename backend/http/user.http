@@ -9,3 +9,8 @@ Content-Type: application/json
 
 ### 보호 대상자 조회
 GET http://localhost:8082/api/v1/child
+Content-Type: application/json
+
+{
+  "email": "test-user@gmail.com"
+}

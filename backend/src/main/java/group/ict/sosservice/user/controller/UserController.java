@@ -15,6 +15,7 @@ import org.springframework.web.bind.annotation.RestController;
 import group.ict.sosservice.authentication.service.dto.UserPrincipal;
 import group.ict.sosservice.common.utils.ApiUtils;
 import group.ict.sosservice.user.controller.dto.ChildRegisterRequest;
+import group.ict.sosservice.user.controller.dto.UserViewRequest;
 import group.ict.sosservice.user.service.UserService;
 import lombok.RequiredArgsConstructor;
 
@@ -35,8 +36,8 @@ public class UserController {
 
     @GetMapping
     public ApiUtils.ApiResult<?> child(
-        @AuthenticationPrincipal final UserPrincipal userPrincipal
+        @RequestBody @Valid final UserViewRequest request
     ) {
-        return success(userService.findChild(userPrincipal.getUserId()));
+        return success(userService.findChild(request.getEmail()));
     }
 }

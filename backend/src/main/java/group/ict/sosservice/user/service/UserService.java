@@ -33,17 +33,14 @@ public class UserService {
     }
 
     @Transactional(readOnly = true)
-    public ChildResponse findChild(final Long parentId) {
-        return modelMapper.map(findChildById(parentId), ChildResponse.class);
+    public ChildResponse findChild(final String email) {
+        final User parent = userRepository.findByEmail(Email.of(email))
+            .orElseThrow(() -> new InvalidMemberException(ErrorType.NOT_FOUND_MEMBER));
+        return modelMapper.map(findChildById(parent.getId()), ChildResponse.class);
     }
 
     private User findChildById(final Long userId) {
         return userRepository.findChildById(userId)
             .orElseGet(EmptyUser::new);
-    }
-
-    private User findById(final Long userId) {
-        return userRepository.findById(userId)
-            .orElseThrow(() -> new InvalidMemberException(ErrorType.NOT_FOUND_MEMBER));
     }
 }
