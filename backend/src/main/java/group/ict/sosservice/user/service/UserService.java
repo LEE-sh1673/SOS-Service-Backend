@@ -22,8 +22,9 @@ public class UserService {
     private final ModelMapper modelMapper;
 
     @Transactional
-    public void registerChild(final Long parentId, final String childEmail) {
-        final User parent = findById(parentId);
+    public void registerChild(final String userEmail, final String childEmail) {
+        final User parent = userRepository.findByEmail(Email.of(userEmail))
+            .orElseThrow(() -> new InvalidMemberException(ErrorType.NOT_FOUND_MEMBER));
 
         final User child = userRepository.findByEmail(Email.of(childEmail))
             .orElseThrow(() -> new InvalidMemberException(ErrorType.NOT_FOUND_MEMBER));

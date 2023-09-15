@@ -37,7 +37,8 @@ class UserControllerTest {
     @DisplayName("보호 대상자를 등록할 수 있다.")
     void givenChildRegisterRequest_thenResponseOK() throws Exception {
         final ChildRegisterRequest registerRequest = ChildRegisterRequest.builder()
-            .email("test-user@gmail.com")
+            .userEmail("test-user@gmail.com")
+            .childEmail("test-user@gmail.com")
             .build();
 
         final ResultActions result = mockMvc.perform(
@@ -56,7 +57,8 @@ class UserControllerTest {
     @DisplayName("보호 대상자를 등록시 email은 필수이다.")
     void givenNonExistEmailRequest_thenErrorResponse() throws Exception {
         final ChildRegisterRequest registerRequest = ChildRegisterRequest.builder()
-            .email(null)
+            .userEmail("test-user@gmail.com")
+            .childEmail(null)
             .build();
 
         final ResultActions result = mockMvc.perform(
@@ -78,7 +80,8 @@ class UserControllerTest {
     @DisplayName("보호 대상자 등록시 email은 올바른 형식이어야 한다.")
     void givenInvalidEmailRequest_thenErrorResponse() throws Exception {
         final ChildRegisterRequest registerRequest = ChildRegisterRequest.builder()
-            .email("Invalid-email.com")
+            .userEmail("test-user.gmail.com")
+            .childEmail("test-user@gmail.com")
             .build();
 
         final ResultActions result = mockMvc.perform(
@@ -100,7 +103,8 @@ class UserControllerTest {
     @DisplayName("보호 대상자 등록시 존재하지 않는 회원의 email인 경우 오류를 발생시킨다.")
     void givenNonExistEmailUser_thenErrorResponse() throws Exception {
         final ChildRegisterRequest registerRequest = ChildRegisterRequest.builder()
-            .email("not-exists@gmail.com")
+            .userEmail("test-user@gmail.com")
+            .childEmail("not-exists@gmail.com")
             .build();
 
         final ResultActions result = mockMvc.perform(

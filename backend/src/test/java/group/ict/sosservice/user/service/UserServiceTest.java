@@ -55,7 +55,7 @@ class UserServiceTest {
     @Test
     @DisplayName("보호 대상자를 등록할 수 있다.")
     void register_child() {
-        userService.registerChild(parent.getId(), child.getEmail().getValue());
+        userService.registerChild(parent.getEmail().getValue(), child.getEmail().getValue());
 
         final User actual = parent.getChild();
         assertEquals(child.getName(), actual.getName());
@@ -68,7 +68,7 @@ class UserServiceTest {
     @WithMockTestUser
     @DisplayName("보호 대상자를 조회할 수 있다.")
     void get_child() {
-        userService.registerChild(parent.getId(), child.getEmail().getValue());
+        userService.registerChild(parent.getEmail().getValue(), child.getEmail().getValue());
 
         final ChildResponse actual = userService.findChild(parent.getId());
         assertEquals(child.getId(), actual.getId());

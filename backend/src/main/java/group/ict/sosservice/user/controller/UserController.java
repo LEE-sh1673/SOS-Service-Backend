@@ -27,10 +27,9 @@ public class UserController {
 
     @PostMapping
     public ResponseEntity<?> registerChild(
-        @RequestBody @Valid final ChildRegisterRequest request,
-        @AuthenticationPrincipal final UserPrincipal userPrincipal
+        @RequestBody @Valid final ChildRegisterRequest request
     ) {
-        userService.registerChild(userPrincipal.getUserId(), request.getEmail());
+        userService.registerChild(request.getUserEmail(), request.getChildEmail());
         return ResponseEntity.ok().build();
     }
 
