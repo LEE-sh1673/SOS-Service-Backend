@@ -27,8 +27,10 @@ public class MonitorRoomService {
     @Transactional
     public String createRoom(final String email) {
         final User user = findUserByEmail(email);
-        validateRoom(user);
 
+        if (existsRoom(user)) {
+            return findUUIDByEmail(email);
+        }
         final MonitorRoom room = MonitorRoom.builder()
             .user(user)
             .build();
@@ -36,10 +38,8 @@ public class MonitorRoomService {
         return roomRepository.save(room).getRoomUUID();
     }
 
-    private void validateRoom(final User user) {
-        if (roomRepository.existsMonitorRoomByUser(user)) {
-            throw new BadRequestException(ErrorType.DUPLICATED_ROOM);
-        }
+    private boolean existsRoom(final User user) {
+        return roomRepository.existsMonitorRoomByUser(user);
     }
 
     public String findUUIDByEmail(final String email) {
