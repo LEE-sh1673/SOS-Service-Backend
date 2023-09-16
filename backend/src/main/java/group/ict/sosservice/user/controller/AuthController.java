@@ -39,7 +39,7 @@ public class AuthController {
         return ResponseEntity.ok().build();
     }
 
-    @GetMapping("/me")
+    @PostMapping("/me")
     public ApiUtils.ApiResult<?> me(@RequestBody @Valid final UserViewRequest request) {
         return success(authService.findUser(request.getEmail()));
     }

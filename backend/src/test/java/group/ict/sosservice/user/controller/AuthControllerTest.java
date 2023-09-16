@@ -249,7 +249,7 @@ class AuthControllerTest {
             .build();
 
         final ResultActions result = mockMvc.perform(
-            get("/api/v1/auth/me")
+            post("/api/v1/auth/me")
                 .contentType(APPLICATION_JSON)
                 .accept(APPLICATION_JSON)
                 .content(objectMapper.writeValueAsString(viewRequest))
