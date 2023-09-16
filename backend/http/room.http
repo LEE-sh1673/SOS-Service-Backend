@@ -1,0 +1,7 @@
+### 모니터링 ID 조회
+POST http://localhost:8082/api/v1/rooms
+Content-Type: application/json
+
+{
+  "email": "test-user@gmail.com"
+}

@@ -173,7 +173,7 @@ public class AuthControllerDocTest {
                 ),
                 responseFields(
                     fieldWithPath("success").description("응답 성공 여부"),
-                    fieldWithPath("response").type(NUMBER).description("로그인한 사용자의 ID"),
+                    fieldWithPath("response").type(STRING).description("사용자 모니터링 ID"),
                     fieldWithPath("error").type(OBJECT).ignored()
                 )
             ));

@@ -47,6 +47,8 @@ public class SecurityConfig {
 
     private final PersistentTokenRepository persistentTokenRepository;
 
+    private final LoginSuccessHandler loginSuccessHandler;
+
     @Value("${security.authentication.validity-seconds}")
     private long validityInSeconds;
 
@@ -62,13 +64,14 @@ public class SecurityConfig {
         http.authorizeHttpRequests((httpRequests) -> httpRequests
             .antMatchers("/docs/**").permitAll()
             .antMatchers("/h2-console/**").permitAll()
+            .antMatchers( "/api/v1/rooms/**").permitAll()
+            .antMatchers( "/ws/**").permitAll()
             .antMatchers(HttpMethod.POST, "/api/v1/auth/signup").permitAll()
             .antMatchers(HttpMethod.POST, "/api/v1/auth/login").permitAll()
             .antMatchers(HttpMethod.POST, "/api/v1/auth/logout").permitAll()
             .antMatchers(HttpMethod.GET, "/api/v1/auth/me").permitAll()
             .antMatchers(HttpMethod.PUT, "/api/v1/auth/me").permitAll()
-            .antMatchers(HttpMethod.POST, "/api/v1/child").permitAll()
-            .antMatchers(HttpMethod.GET, "/api/v1/child").permitAll()
+            .antMatchers("/api/v1/child/**").permitAll()
             .anyRequest().authenticated()
         );
         http.addFilterBefore(
@@ -112,7 +115,7 @@ public class SecurityConfig {
         filter.setAuthenticationManager(authenticationManager());
 
         filter.setAuthenticationFailureHandler(new LoginFailHandler(objectMapper));
-        filter.setAuthenticationSuccessHandler(new LoginSuccessHandler(objectMapper));
+        filter.setAuthenticationSuccessHandler(loginSuccessHandler);
         filter.setSecurityContextRepository(new HttpSessionSecurityContextRepository());
         return filter;
     }

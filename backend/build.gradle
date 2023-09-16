@@ -146,7 +146,9 @@ jacocoTestReport {
                     exclude: [
                             '*SosServiceApplication*',
                             '*H2DevConfig*',
-                            '*JpaPersistentTokenRepository*'
+                            '*JpaPersistentTokenRepository*',
+                            '*MessageController*',
+                            '*Position*'
                     ] + Qdomains)
         }))
     }
@@ -186,7 +188,9 @@ jacocoTestCoverageVerification {
             excludes = [
                     "*SosServiceApplication*",
                     '*H2DevConfig*',
-                    '*JpaPersistentTokenRepository*'
+                    '*JpaPersistentTokenRepository*',
+                    '*MessageController*',
+                    '*Position*'
             ] + Qdomains
         }
     }

@@ -10,7 +10,10 @@ public enum ErrorType {
     NOT_FOUND_MEMBER("존재하지 않는 회원입니다."),
     INVALID_MEMBER_NAME("올바르지 않은 이름입니다."),
     INVALID_MEMBER_EMAIL("올바르지 않은 이메일 형식입니다."),
-    DULICATED_MEMBER_EMAIL("이미 존재하는 이메일입니다.");
+    DULICATED_MEMBER_EMAIL("이미 존재하는 이메일입니다."),
+
+    NOT_FOUND_ROOM("존재하지 않는 모니터링 정보입니다."),
+    DUPLICATED_ROOM("이미 존재하는 모니터링 정보입니다.");
 
     private final String message;
 
