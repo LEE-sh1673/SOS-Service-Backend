@@ -43,7 +43,7 @@ class UserControllerTest {
             .build();
 
         final ResultActions result = mockMvc.perform(
-            post("/api/v1/child")
+            post("/api/v1/child/register")
                 .contentType(APPLICATION_JSON)
                 .accept(APPLICATION_JSON)
                 .content(objectMapper.writeValueAsString(registerRequest))
@@ -63,7 +63,7 @@ class UserControllerTest {
             .build();
 
         final ResultActions result = mockMvc.perform(
-            post("/api/v1/child")
+            post("/api/v1/child/register")
                 .contentType(APPLICATION_JSON)
                 .accept(APPLICATION_JSON)
                 .content(objectMapper.writeValueAsString(registerRequest))
@@ -86,7 +86,7 @@ class UserControllerTest {
             .build();
 
         final ResultActions result = mockMvc.perform(
-            post("/api/v1/child")
+            post("/api/v1/child/register")
                 .contentType(APPLICATION_JSON)
                 .accept(APPLICATION_JSON)
                 .content(objectMapper.writeValueAsString(registerRequest))
@@ -109,7 +109,7 @@ class UserControllerTest {
             .build();
 
         final ResultActions result = mockMvc.perform(
-            post("/api/v1/child")
+            post("/api/v1/child/register")
                 .contentType(APPLICATION_JSON)
                 .accept(APPLICATION_JSON)
                 .content(objectMapper.writeValueAsString(registerRequest))
@@ -131,7 +131,7 @@ class UserControllerTest {
             .build();
 
         final ResultActions result = mockMvc.perform(
-            get("/api/v1/child")
+            post("/api/v1/child")
                 .contentType(APPLICATION_JSON)
                 .accept(APPLICATION_JSON)
                 .content(objectMapper.writeValueAsString(viewRequest))

@@ -1,5 +1,5 @@
 ### 보호 대상자 등록
-POST http://localhost:8082/api/v1/child
+POST http://localhost:8082/api/v1/child/register
 Content-Type: application/json
 
 {
@@ -8,7 +8,7 @@ Content-Type: application/json
 }
 
 ### 보호 대상자 조회
-GET http://localhost:8082/api/v1/child
+POST http://localhost:8082/api/v1/child
 Content-Type: application/json
 
 {

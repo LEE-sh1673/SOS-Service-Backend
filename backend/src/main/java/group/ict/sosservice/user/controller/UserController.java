@@ -26,7 +26,7 @@ public class UserController {
 
     private final UserService userService;
 
-    @PostMapping
+    @PostMapping("/register")
     public ResponseEntity<?> registerChild(
         @RequestBody @Valid final ChildRegisterRequest request
     ) {
@@ -34,7 +34,7 @@ public class UserController {
         return ResponseEntity.ok().build();
     }
 
-    @GetMapping
+    @PostMapping
     public ApiUtils.ApiResult<?> child(
         @RequestBody @Valid final UserViewRequest request
     ) {
