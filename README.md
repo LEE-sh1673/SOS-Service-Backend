@@ -33,6 +33,12 @@ SOS Service Frontend Repository
 
 ## :open_file_folder: 백엔드 개요
 
+- Spring boot, Java, JPA 를 이용한 RESTful API 개발 (모니터링, 사용자 인증 API 구현)
+- Junit를 이용한 단위 테스트 및 통합 테스트 적용 (테스트 커버리지 89% 달성)
+- 프론트엔드와 백엔드 간의 효율적인 협업을 위해 REST Docs 이용, API Docs 제작
+- Gitlab Runner로 CI 환경 구성 (테스트 수행 및 코드 커버리지 측정)
+- 팀장 역할을 수행하여 개발 일정 조율 및 프로젝트 노션 페이지 기획
+
 ## Built With
 
 <p>
@@ -44,8 +50,9 @@ SOS Service Frontend Repository
   <img alt="Gitlab CI" src="https://img.shields.io/badge/gitlab-%23181717?style=flat&logo=gitlab&logoColor=white" height=25 />
 </p>
 
-## About The Project
-
+<div>
+    <img src="https://raw.githubusercontent.com/LEE-sh1673/SOS-Service-Backend/main/assets/scenario_monitoring.png">
+</div>
 
 ## :open_file_folder: 프론트엔드 개요
 
