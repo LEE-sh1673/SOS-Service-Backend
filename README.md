@@ -26,7 +26,8 @@ SOS Service Frontend Repository
   * React Native 0.68.2 / Spring Boot 2.7.12 / Java 11 / AWS EC2
 * 형상 관리 툴 : Git, Gitlab
 * 협업 툴
-  * [Notion](https://www.notion.so/SOS-92e92bfdf8304aa293dfc5e83a842fff)
+  * Notion
+  * Figma
 
 ## :open_file_folder: 백엔드 개요
 
