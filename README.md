@@ -4,7 +4,7 @@
 
 ### 2023년 프로보노 ICT멘토링 프로젝트
 
-SOS Service Frontend Repository
+SOS Service Backend Repository
 
 <!-- [:ballot_box_with_check: 전체 프로젝트 Repository]() -->
 
